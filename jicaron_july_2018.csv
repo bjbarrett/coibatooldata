@@ -1,0 +1,35 @@
+DATE,ID,ANVIL,HAMMER,FRAGMENTATION,WEIGHT,LENGTH,WIDTH,THICKNESS,FRAGMENTATION1,WEIGHT1,LENGTH1,WIDTH1,THICKNESS1,FRAGMENTATION2,WEIGHT2,LENGTH2,WIDTH2,THICKNESS2,ALMENDRAS,SHELLS,HCRABS,COCO,NUT,RESIDUE,SITE TYPE,SITE LOCATION,COMMENTS
+07/27/18,T01,StoneA,1,Whole,358,111,60,54,,,,,,,,,,,No,Yes,No,No,No,,1,Beach,"seabed, intertidal, photo missing or on SLR"
+07/27/18,T02,StoneA,1,Refit,187,99,51,34,,,,,,,,,,,No,Yes,No,No,No,,1,Beach,"snails, seabed anvil, intertidal, photo missing or on SLR"
+07/27/18,T03,StoneA,1,Whole,1582,156,121,84,,,,,,,,,,,Yes,No,No,No,No,,1,Beach,intertidal almendaras
+07/27/18,T04,StoneA,1,Whole,780,136,116,51,,,,,,,,,,,Yes,Yes,No,No,No,,1,Beach,"intertidal, almendra, caracol"
+07/27/18,T05,,1,Refit,541,121,74,42,,,,,,,,,,,Yes,No,No,No,No,,1,Beach,almendra
+07/27/18,T06,StoneA,1,Whole,334,100,84,59,,,,,,,,,,,No,Yes,No,No,No,,1,Beach,"caracol, intertidal"
+07/27/18,T07,StoneA,1,Whole,970,130,94,71,,,,,,,,,,,No,Yes,No,No,No,,1,Beach,"caracol, intertidal"
+07/27/18,T08,StoneA,1,Whole,253,102,52,31,,,,,,,,,,,No,Yes,No,No,No,,1,Beach,"caracol, intertidal"
+07/27/18,T09,WoodA,Wooden,Whole,155(wet); 98(dry),59,56,37,,,,,,,,,,,No,Yes,No,No,No,,2,Beach,"caracol, would have likely only been washed away by very strong tide"
+07/27/18,T10,WoodA,1,Whole,334,100,84,59,,,,,,,,,,,Yes,Yes,No,No,No,,3,Stream Bank,BBC log
+07/27/18,T11,StoneA,1,Whole,774,130,114,54,,,,,,,,,,,Yes,No,No,No,No,,3,Stream Bank,
+07/27/18,T12a,StoneA,1,Whole,401,105,66,55,,,,,,,,,,,Yes,No,No,No,No,,2,Stream Bank,"middle beige, Cebus 17-01"
+07/27/18,T12b,StoneA,1,Whole,330,144,61,60,,,,,,,,,,,Yes,No,No,No,No,,2,Stream Bank,"long, dark, skinny, Cebus 17-01"
+07/27/18,T12c,StoneA,1,Whole,600,125,74,86,,,,,,,,,,,Yes,No,No,No,No,,2,Stream Bank,"largest, Cebus 17-01"
+07/27/18,T13a,StoneA,1,Whole,539,135,86,60,,,,,,,,,,,Yes,No,No,No,No,,3,Stream Bank,"large red/brown, Cebus-17-02"
+07/27/18,T13b,StoneA,1,Whole,300,105,70,54,,,,,,,,,,,Yes,No,No,No,No,,3,Stream Bank,"middle, Cebus-17-02"
+07/27/18,T13c,StoneA,1,Whole,408,100,90,60,,,,,,,,,,,Yes,No,No,No,No,,3,Stream Bank,"dark, Cebus 17-02"
+07/27/18,T14,StoneA,1,Whole,611,126,102,50,,,,,,,,,,,Yes,No,No,No,No,,2,Stream Bank,discovery stream
+07/27/18,T15,WoodA,1,Whole,1153,150,110,54,,,,,,,,,,,Yes,Yes,No,No,No,,2,In Tree/Beach,"180728T19 in same tree // unclear how this would fit into the 1,2,,3 site type classification"
+07/27/18,T16,StoneA,1,Whole,1740,172,133,60,,,,,,,,,,,Yes,Yes,No,No,No,,3,Stream Bank,Cebus-16-xx(video one_
+07/27/18,T17,WoodA,1,Whole,779,126,91,46,,,,,,,,,,,Yes,Yes,No,No,No,,2,In Tree/Beach,wooden anvil next to T15
+07/28/18,T18,StoneA,1,Whole,836,181,92,74,,,,,,,,,,,No,No,No,No,Yes,,1,Stream,"mystery fruit nut (collected, photo taken)"
+07/28/18,T19,WoodA,1,Whole,122,64,61,44,,,,,,,,,,,No,Yes,No,No,No,,1,In Tree/Beach,"in photo of 180727T15, unclear how this would fit into 1,2,3 classification"
+07/28/18,T20,StoneA,1,Whole,1059,171,122,52,,,,,,,,,,,Yes,Yes,No,No,No,,2,Stream Bank,
+07/28/18,T21,StoneA,1,Whole,437,133,84,44,,,,,,,,,,,Yes,Yes,No,No,No,,2,Beach,just above beach
+07/28/18,T22,StoneA,1,Refit(incomplete),117,70,46,43,,,,,,,,,,,Yes,Yes,No,Yes,No,,3,Stream Bank,"fragment, Cebus 16"
+07/28/18,T23,StoneA,1,Whole,383,108,71,43,,,,,,,,,,,Yes,No,No,Yes,No,,3,Stream Bank,Cebus-16-4
+07/28/18,T24,WoodA,1,Refit(incomplete),1069,,,,,,,,,,,,,,,,,,,,1,In Tree/Beach,cannot refit
+07/28/18,T25,,1,Whole,433,144,81,32,,,,,,,,,,,Yes,No,No,No,No,,,Stream,no photo
+07/28/18,T26,StoneA,1,Refit,510,109,79,57,,,,,,,,,,,Yes,No,No,No,No,,2,Stream Bank,
+07/28/18,T27a,StoneA,1,Whole,713,129,92,63,,,,,,,,,,,Yes,No,No,No,No,,2,Stream Bank,
+07/28/18,T27b,StoneA,1,Whole,393,121,57,51,,,,,,,,,,,Yes,No,No,No,No,,2,Stream Bank,
+07/28/18,T28,StoneA,1,Whole,437,91,72,39,,,,,,,,,,,Yes,Yes,No,No,No,,3,Stream Bank,
+07/28/18,T29,WoodA,1,Whole,461,103,82,51,,,,,,,,,,,Yes,Yes,No,No,No,,2,Beach,"caracol, near shore of T28, needs GPS, point manually crated by BJB 20190508"
