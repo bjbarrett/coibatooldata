@@ -1,0 +1,62 @@
+DATE,ID,ANVIL,HAMMER,FRAGMENTATION,WEIGHT,LENGTH,WIDTH,THICKNESS,FRAGMENTATION1,WEIGHT1,LENGTH1,WIDTH1,THICKNESS1,FRAGMENTATION2,WEIGHT2,LENGTH2,WIDTH2,THICKNESS2,ALMENDRAS,SHELLS,HCRABS,COCO,RESIDUE,SITE TYPE,SITE LOCATION,COMMENTS
+03/24/19,190324T01,StoneA,1,Whole,387.5,103.7,66.26,47.52,,,,,,,,,,,Yes,Yes,Yes,Yes,"mainly almandras and coco,few other food",3,Beach/Stre,"no coco trees around, fresh almandras"
+03/24/19,190324T02,WoodenA,1,Whole,1056,151.64,80.1,60.19,,,,,,,,,,,Yes,Yes,Yes,Yes,"mainly almandras and coco, a few shells",2,Streambank,stream bank on the beach; fresh almendra
+03/24/19,190324T03,WoodenA,1,Broken,308.05,65.17,67.34,53.95,,,,,,,,,,,Yes,Yes,Yes,Yes,mainly almendras,2,Streambank,
+03/24/19,190324T04,StoneA,1,Whole,633,114.98,47.28,53.56,,,,,,,,,,,Yes,Yes,No,Yes,mainly coconut,3,Streambank,
+03/24/19,190324T05,WoodenA,1,Whole,1035,134.04,113.79,51.75,,,,,,,,,,,Yes,No,No,No,,2,Beach,"pebble hammer, palm tree on the beach"
+03/25/19,190325T01,StoneA,1,Broken,145.1,87.93,43.73,40.08,,,,,,,,,,,No,Yes,No,Yes,,1,Stream,
+03/25/19,190325T02,StoneA,1,Whole,886,197,101.25,51.06,,,,,,,,,,,No,Yes,No,No,a few frags only,1,Stream,
+03/25/19,190325T03,StoneA,1,Whole,333,112.26,53.42,39.79,,,,,,,,,,,No,Yes,No,Yes,cocnut a bit firther away,1,Stream,
+03/25/19,190325T04,StoneA,1,Whole,225.5,93.25,51.47,50.59,,,,,,,,,,,No,Yes,No,No,,1,Stream,
+03/25/19,190325T05,WoodenA,1,Whole,213,81,54.27,44.58,,,,,,,,,,,No,Yes,No,No,,1,Stream,
+03/25/19,190325T06,StoneA,1,Whole,833,135.15,81.77,65.92,,,,,,,,,,,No,Yes,No,No,,1,Stream,
+03/25/19,190325T07,WoodenA,1,Whole,755,117,83.96,50.84,,,,,,,,,,,Yes,No,No,No,1 almandra piece only,1,Stream,
+03/25/19,190325T08,StoneA,1,Whole,1455,151.59,121.59,73.71,,,,,,,,,,,Yes,No,No,Yes,fresh almandras,1,Stream,prob used that morning
+03/25/19,190325T09,StoneA,1,Whole,668,119.82,104.93,50.99,,,,,,,,,,,Yes,No,No,No,fresh alm,1,Stream,"small anvil, close to the beach"
+03/25/19,190325T10,StoneA,1,Whole,1133,125.02,94.45,87.4,,,,,,,,,,,Yes,Yes,Yes,No,fresh,1,Stream,"close ot the beach, where stream ends"
+03/25/19,190325T11,WoodenA,1,Whole,650,101.82,89.58,60.30,,,,,,,,,,,Yes,No,No,Yes,few residues,1,Stream,"a few residue on the wood itself, fresh"
+03/25/19,190325T12,WoodenA,1,Whole,688,114.77,96.62,50,,,,,,,,,,,Yes,No,Yes,Yes,fresh,1,Stream,
+03/25/19,190325T13,StoneA,1,Refit,526,120.95,80.06,50.02,,,,,,,,,,,Yes,No,No,No,,1,Stream,very few alm (1 or 2)
+03/26/19,190326T01,StoneA,1,Broken,399,97.79,53.96,58.02,,,,,,,,,,,Yes,Yes,Yes,Yes,"mainly alm and coco, large amounts",3,Streambank,
+03/26/19,190326T02,N/A,N/A,,,,,,,,,,,,,,,,Yes,No,Yes,Yes,,2,Streambank,"no clear hammer/anvils,deposit as anvil"
+03/26/19,190326T03,WoodenA,1,Broken,132,93.25,55,36.89,,,,,,,,,,,Yes,No,Yes,Yes,,1,Streambank,
+03/26/19,190326T04,WoodenA,No,N/A,,,,,,,,,,,,,,,Yes,No,No,Yes,,1,Streambank,sparce activity remains
+03/26/19,190326T05,StoneA,1,Whole,526,131.94,76.46,62.68,,,,,,,,,,,Yes,No,No,Yes,thick almandra deposit!,3,Streambank,"thick and compact deposit, archeo!"
+03/26/19,190326T06,WoodenA,1,Whole,164.8,90.56,65.63,27.76,,,,,,,,,,,No,Yes,No,No,not a lot of residue,1,Stream,
+03/26/19,190326T07,StoneA,1,Whole,706,99.7,66.68,64.42,,,,,,,,,,,No,Yes,No,No,few res,1,Stream,
+03/26/19,190326T08,StoneA,1,Whole,765,128.69,102.57,59.72,,,,,,,,,,,Yes,No,No,No,,1,Stream,
+03/26/19,190326T09,StoneA,1,Refit,594,153.07,93.62,68.44,,788,138.03,63.84,68.44,,,,,,No,Yes,No,No,sparce,1,Streambank,two fragments of the same hammer recorded separately
+03/26/19,190326T10,StoneA,2,Refit,449.5,138.03,63.84,53.51,Whole,809,146.07,104.63,51.34,,,,,,Yes,Yes,No,Yes,plus palm remains,1,Stream,
+03/26/19,190326T11,StoneA,1,Whole,278.5,106.93,58.54,44.51,,,,,,,,,,,No,Yes,No,No,,1,Stream,
+03/26/19,190326T12,StoneA,1,Broken,276.5,92.58,83.59,40.55,,,,,,,,,,,No,Yes,No,No,,1,Streambank,
+03/26/19,190326T13,WoodenA,2,Whole,316,81.17,74.66,52.83,Whole,362,82.23,68.51,43.85,,,,,,Yes,Yes,No,Yes,,2,Streambank,"roots of a tree as anvil, t13,T14,t15 - same location"
+03/26/19,190326T14,WoodenA,1,Refit,133,70.84,54.72,28.69,,,,,,,,,,,No,Yes,No,No,,2,Streambank,"tree locatin as t13,t15"
+03/26/19,190326T15,StoneA,1,Refit,,,,34.47,,,,,,,,,,,No,Yes,No,Yes,,2,Streambank,"same tree as 13&14-one location,refit not comp,thick only"
+03/26/19,190326T16,StoneA,2,Whole,1588,140.44,100.64,80.78,Broken,588,,,,,,,,,Yes,No,No,No,"almandra residue violet, on hamm&anvil",1,Stream,"large anvil, violet residue, hammers on two sides of anvil"
+03/26/19,190326T17,StoneA,1,Whole,,,,,,,,,,,,,,,No,Yes,No,No,one shell,1,Stream,wear and residue on the anvil
+03/26/19,190326T18,StoneA,N/A,,,,,,,,,,,,,,,,Yes,Yes,No,Yes,,1,Streambank,"unclear activity evidence, no clear hammer, but yes residue"
+03/26/19,190326T19,StoneA,1,Whole,537.7,138.25,85.32,49.57,,,,,,,,,,,No,Yes,No,No,"residue on hammer, both sides and anvil",1,Streambank,
+03/26/19,190326T20,StoneA,1,Broken,,,,,,,,,,,,,,,Yes,Yes,No,No,,1,Stream,sandstone hammer broken
+03/26/19,190326T21,StoneA,1,Broken,495,121.55,65.78,58.93,,,,,,,,,,,No,Yes,No,No,one shell residue,1,Stream,next to T20
+03/26/19,190326T22,StoneA,1,Whole,1487,145.46,98.83,95.16,,,,,,,,,,,No,No,No,No,residue+violet on both sides of h+anvil ,1,Stream,"anvil conglomerte rock, staining from almandras"
+03/26/19,190326T23,StoneA,1,Whole,756,107.36,96.71,63.04,,,,,,,,,,,No,Yes,No,No,residue on hammer,1,Stream,hammer is hald a pebble
+03/26/19,190326T24,StoneA,1,Whole,1150,121.29,107.68,87.47,,,,,,,,,,,No,Yes,No,No,almandra stains on hammer and anvil,1,Stream,
+03/26/19,190326T25,StoneA,1,Whole,567,111.31,88.81,47.03,,,,,,,,,,,No,No,No,No,almandra residue on hammer,1,Stream,
+03/26/19,190326T26,StoneA,1,Whole,837,121.21,76.12,73.21,,,,,,,,,,,No,No,No,No,,1,Stream,
+03/26/19,190326T27,StoneA,1,Whole,298,94.21,60.47,47.24,,,,,,,,,,,No,Yes,No,No,,1,Stream,
+03/26/19,190326T28,StoneA,1,Whole,552,116.34,85.09,62.52,,,,,,,,,,,No,No,No,No,almandra residue on hammer and anvil,1,Stream,
+01/04/19,19010401,WoodenA,1,Refit,690,10.64,113.68,64.24,,,,,,,,,,,Yes,Yes,No,Yes,mostly almendras and residues sampled,3,Streambank,
+01/04/19,19010402,StoneA,No,N/A,,,,,,,,,,,,,,,Yes,Yes,No,Yes,also with another type of fruit,3,Streambank,without clear hammers even heavy residue
+01/04/19,19010403,StoneA,3,Broken,479,95.89,74.87,49.58,Broken,429,84.98,82.44,39.50,Broken,343,102.1,46.43,41.42,Yes,No,No,Yes,mostly almendras,3,Streambank,with 2 more hammer broken pieces
+01/04/19,19010404,StoneA,2,Refit,756,138.89,62.81,56.21,Refit,1567,149.29,107.24,83.21,,,,,,Yes,Yes,No,Yes,"fresh almendras, hammer 2 captured in ca",3,Streambank,a heavy hammer (5 refits) 
+01/04/19,19010405,StoneA,2,N/A,304,84.08,74.43,46.92,Whole,1214,153.94,88.33,59.04,,,,,,Yes,Yes,No,Yes,a type of fruit,3,Other,a higher platform along costal 
+01/04/19,19010406,StoneA,1,Whole,684,136.14,81.26,57.83,,,,,,,,,,,Yes,No,No,No,2 fresh almendras with a few others,1,Stream,
+01/04/19,19010407,StoneA,2,Whole,1253,143.05,103.14,86.90,Broken,339,77.57,65.16,44.48,,,,,,Yes,No,No,No,2 almendras,1,Stream,two anivils within 0.7m
+01/04/19,19010408,StoneA,1,Whole,572,138.51,87.69,50.91,,,,,,,,,,,Yes,No,No,No,only almendras residue,1,Stream,2 anivils within 1m 
+01/04/19,19010409,StoneA,2,Whole,567,130.85,83.05,65.97,Broken,211,85.50,71.44,46.13,,,,,,Yes,Yes,No,No,only few snails or crap shells,2,Streambank,very close to steam and site 06 07 08
+01/04/19,19010410,WoodenA,1,Whole,1065,141.84,114.19,55.38,,,,,,,,,,,Yes,No,No,No,3-4 almendras and pebble hammer,1,Beach,
+01/04/19,19010411,WoodenA,1,Whole,1192,151.28,113.44,95.69,,,,,,,,,,,Yes,No,No,Yes,few almendras on anvils and cocos near ,1,Streambank,wooden piece on the steambank 
+01/04/19,19010412,StoneA,1,Broken,826,113.86,104.47,61.14,,,,,,,,,,,Yes,N/A,No,Yes,,3,Streambank,coverd by leaves no fresh residues
+01/04/19,19010413,WoodenA,1,Whole,335,106.75,71.31,30.43,,,,,,,,,,,Yes,Yes,No,Yes,,2,Beach,tree root and truck made as anvil
+01/04/19,19010414,WoodenA,1,Whole,593,113.31,93.71,51.76,,,,,,,,,,,No,No,No,Yes,microresidue of almendra maybe,1,Beach,on steam bank where very close to costal
+01/04/19,19010415,WoodenA,1,Whole,416,123.35,94.87,46.40,,,,,,,,,,,Yes,No,No,No,2 almendras ?,1,Beach,
