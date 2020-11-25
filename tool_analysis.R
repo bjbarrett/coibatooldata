@@ -4,28 +4,8 @@ library(gtools)
 library(janitor)
 library(rethinking)
 
-# NOT RUN {
-plot(c(0,10), c(0,10), type="n", main="test draw.ellipse")
-draw.ellipse(c(3,7), c(8,8), c(0.5,1), c(1,0.5), col=c(2,4),
-             angle=c(45,0), segment=rbind(c(0,45),c(45,360)))
-draw.ellipse(c(3,7), c(6,6), c(0.5,1), c(1,0.5), col=c(2,4),
-             angle=c(45,0), segment=rbind(c(0,45),c(45,360)), arc.only=FALSE)
-draw.ellipse(c(3,7), c(4,4), c(0.5,1), c(1,0.5), border=c(2,4),
-             angle=c(45,0), segment=rbind(c(0,45),c(45,360)), arc.only=FALSE)
-draw.ellipse(c(3,7), c(2,2), c(0.5,1), c(1,0.5), border=1,
-             angle=c(45,0), lty=3)
-draw.ellipse(c(3,7), c(2,2), c(0.5,1), c(1,0.5), border=c(5,3),
-             angle=c(45,0), nv=c(3,4), lty=2, lwd=2)
-# }
 
-plot(c(0,10), c(0,10), type="n", main="test draw.ellipse")
-draw.ellipse(c(3,7), c(2,2), c(0.5,1), c(1,0.5), border=1,
-             angle=c(45,0), lty=1)
-draw.ellipse(c(3,9), c(2,2), c(0.5,1), c(1,0.5), border=1,
-             angle=c(0,0), lty=1 , col=c(2,4) )
-
-######33
-# load data
+## load data
 mar2018 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/jicaron_mar_2018.csv")
 jul2018 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/jicaron_july_2018.csv")
 jul2017jan2018 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/jicaron_july_2017_jan_2018.csv")
@@ -127,3 +107,156 @@ dens(d$weight[d$almendras=="No"] , add=TRUE , col="brown")
 
 draw.ellipse(c(10,10), c(20,20), c(0.5,100), c(1,5), border=1,
              angle=c(0,0), lty=1 , col=c(2,4) )
+
+####redo gamma GLMS 
+
+m <- map2stan(
+  alist(
+    weight ~ dgamma2(mu,scale),
+    log(mu) ~ a ,
+    a ~ dnorm(1,2),
+    scale ~ dexp(0.5)
+  ),
+  
+  data=d, cores=2 , warmup=1000 , iter=2000 , WAIC=TRUE, constraints=list(scale="lower=0") , sample=TRUE, 
+)
+
+post <- extract.samples(m)
+plot.new()
+#check prior to see it reasonable based on laws of physics and capuchin monkey biology
+#scale prior
+
+scale_prior <- rexp(n=10000, rate=0.005)
+dens(scale_prior)
+
+shape_prior <- rnorm(n=10000, mean=3.5 , sd=2)
+plot.new()
+
+plot(density(d$weight, adjust=1.8), xlim=c(0,3000))
+for ( i in 1:100 ) {
+  curve(dgamma(x , shape=shape_prior[i] , scale=scale_prior[i])  , add=TRUE ,  col=col.alpha("black",0.3))
+}
+
+curve(dgamma(x , shape=median(shape_prior) , scale=median(scale_prior))   , add=TRUE , col="red" , lw=2)
+
+#####
+prior <- extract.prior(m1)
+str(prior)
+
+plot.new()
+plot(density(d$weight, adjust=1.8), xlim=c(0,3500))
+for ( i in 1:100 ) {
+  curve(dgamma(x , shape=prior$a[i] , scale=prior$scale[i])  , add=TRUE ,  col=col.alpha("black",0.3))
+}
+curve(dgamma(x , shape=mean(prior$a) , scale=mean(prior$scale))  , add=TRUE , col="red" , lw=2)
+
+plot.new()
+plot(density(d$weight, adjust=1.8), xlim=c(0,500))
+for ( i in 1:100 ) {
+  curve(dgamma(x , shape=prior$a[i] , scale=prior$scale[i])  , add=TRUE ,  col=col.alpha("black",0.3))
+}
+
+curve(dgamma(x , shape=3 , scale=100 ) , add=TRUE , col="blue" , lw=2)
+
+#begin model plot
+
+plot(density(d$weight), xlim=c(0,2500)  , col="green" , ylim=c(-0.0002,0.0027) , main="" , xlab="mean stone tool weight (g)" , cex.lab=1.5, yaxt='n' , ylab="")
+
+for ( i in 1:100 ) {
+  curve(dgamma(x , shape=post$a[i] , scale=post$scale[i])  , add=TRUE ,  col=col.alpha("black",0.1))
+}
+
+curve(dgamma(x , shape=mean(post$a) , scale=mean(post$scale))  , add=TRUE , col="black" , lw=2)
+
+points( d$weight, rep(-0.0001, nrow(d)) , pch=19 , col=col.alpha(1 , 0.2) , cex=0.5)
+
+m1 <- map2stan(
+  alist(
+    weight ~ dgamma2(mu,scale),
+    log(mu) ~ a + b_a*almendras_yes ,
+    a ~ dnorm(1,2),
+    b_a  ~ dnorm(0,1),
+    scale ~ dexp(0.5)
+  ),
+  
+  data=d, cores=4 , warmup=1000 , iter=2000 , WAIC=TRUE, constraints=list(scale="lower=0") , sample=TRUE, 
+)
+
+precis(m1)
+post <- extract.samples(m1)
+dens(d$weight)
+###################3no scale parameter plots
+dens(exp(with(post, a + b_a*0)) , add=TRUE , col="grey")
+dens(exp(with(post, a + b_a*1)) , add=TRUE , col="green")
+plot(density(d$weight), xlim=c(0,2500)  , col="grey" , ylim=c(-0.0002,0.015) , main="" , xlab="mean stone tool weight (g)" , cex.lab=1.5, yaxt='n' , ylab="")
+dens(exp(with(post, a + b_a*0)) , add=TRUE , col="orange")
+dens(exp(with(post, a + b_a*1)) , add=TRUE , col="green")
+pts <- d$weight[d$almendras_yes==0]
+points( pts , rep(-0.0001, length(pts)) , pch=19 , col=col.alpha("orange" , 0.2) , cex=0.5)
+pts <- d$weight[d$almendras_yes==1]
+points( pts , rep(-0.0003, length(pts)) , pch=19 , col=col.alpha("green" , 0.2) , cex=0.5)
+
+
+###no almendras
+for ( i in 1:100 ) {
+  curve(dgamma(x , shape=post$a[i] + post$b_a[i]*0 , scale=post$scale[i])  , add=TRUE ,  col=col.alpha("orange",0.1))
+}
+curve(dgamma(x , shape=mean(post$a + post$b_a*0) , scale=median(post$scale))  , add=TRUE , col="orange" , lw=2)
+pts <- d$weight[d$almendras_yes==0]
+points( pts , rep(-0.0001, length(pts)) , pch=19 , col=col.alpha("orange" , 0.2) , cex=0.5)
+
+###yes almendras
+for ( i in 1:100 ) {
+  curve(dgamma(x , shape=post$a[i] + post$b_a[i]*1 , scale=post$scale[i])  , add=TRUE ,  col=col.alpha("green",0.1))
+}
+curve(dgamma(x , shape=mean(post$a + post$b_a*1) , scale=median(post$scale))  , add=TRUE , col="green" , lw=2)
+pts <- d$weight[d$almendras_yes==1]
+points( pts , rep(-0.0002, length(pts)) , pch=19 , col=col.alpha("green" , 0.2) , cex=0.5)
+
+
+###########
+d$logweight <- log(d$weight)
+
+m1 <- ulam(
+  alist(
+    logweight ~ dnorm(mu,sigma),
+    mu <- a + bA*almendras_yes ,
+    a ~ dnorm(6,2),
+    bA  ~ dnorm(0,2),
+    sigma ~ dexp(1)
+  ),
+  
+  data=d, cores=2 , warmup=1000 , iter=2000 , sample=TRUE, 
+)
+
+m2 <- map2stan(
+  alist(
+   logweight ~ dnorm(mu,sigma),
+    mu ~ a + bA*almendras_yes ,
+    a ~ dnorm(6,2),
+    bA  ~ dnorm(0,1),
+    sigma ~ dexp(1)
+  ),
+  data=d, cores=2 , warmup=1000 , iter=2000 , sample=TRUE)
+
+
+post <- extract.samples(m2)
+precis(m2)
+
+dens(post$a + post$bA , xlim=c(5,7) , col="green")
+dens(post$a , add=TRUE)
+
+lm1 <- lm(logweight ~ almendras_yes , data=d)
+summary(lm1)
+precis(m1)
+exp(6.06)
+exp(6.06 + 0.39)
+
+lm2 <- lm(logweight ~ almendras_yes*shells_yes , data=d)
+summary(lm2)
+exp(lm2$coefficients[[1]] ) #neither almendras or shells
+exp(lm2$coefficients[[1]] + lm2$coefficients[[2]]) #just almendras
+exp(lm2$coefficients[[1]] + lm2$coefficients[[3]]) #just shells
+exp(lm2$coefficients[[1]] + lm2$coefficients[[2]] + lm2$coefficients[[3]] + lm2$coefficients[[4]]) #shells and almendras
+
+lm2$coefficients
