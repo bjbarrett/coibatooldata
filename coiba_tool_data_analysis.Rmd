@@ -1,0 +1,311 @@
+---
+title: "coiba_tool_data_analysis"
+author: "Brendan Barrett"
+date: "11/26/2020"
+output: html_document
+fig_width: 6 
+fig_height: 6 
+---
+
+```{r data import, include=FALSE}
+library(plotrix)
+library(gtools)
+library(janitor)
+library(rethinking)
+library(dplyr)
+library(wesanderson)
+
+## load data
+mar2018 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/jicaron_mar_2018.csv")
+jul2018 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/jicaron_july_2018.csv")
+jul2017jan2018 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/jicaron_july_2017_jan_2018.csv")
+janmar2019 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/Jan March 2019.csv")
+
+##add nut to this from datasets where it is missing
+mar2018$NUT <- 0
+janmar2019$NUT <- 0
+
+str(mar2018)
+str(jul2018)
+str(jul2017jan2018)
+str(janmar2019)
+
+d <- smartbind(mar2018,jul2018,janmar2019)
+d <- clean_names(d) #make names tidy
+
+d <- d[is.na(d$length)==FALSE,] #drop nas length from smartbind
+d <- d[d$hammer!="Wooden",] #get rid of Wooden Hammer
+d$weight <- as.numeric(d$weight) #force to numeric
+#below steps coorect errors where length and width are messed up. width is widest dimension by default
+dl <- d$length
+dw <- d$width
+which(d$length > d$width)
+which(d$length < d$width)
+which(d$width  <  d$thickness)
+which(d$length  <  d$thickness) #only one where length is greater than thickness
+d$length[which(dl < dw)] <- dw[which(dl < dw)] #swap l and w
+d$width[which(dl < dw)] <- dl[which(dl < dw)] #swap l and w
+which(d$length < d$width) #check for zero if correct
+d$almendras_yes <- ifelse(d$almendras=="Yes" , 1 , 0)
+d$shells_yes <- ifelse(d$shells=="Yes" , 1 , 0)
+d$hcrabs_yes <- ifelse(d$hcrabs=="Yes" , 1 , 0)
+d$caracol_yes <- 0
+d$caracol_yes[grep("caracol" , d$comments)] <- 1
+d$caracol_yes[grep("snail" , d$comments)] <- 1
+d$logweight <- log(d$weight) #in case running an lm is desired
+
+##anvil issues
+d$stone_anvil <- 1
+d$stone_anvil[grep("Wood" , d$anvil)] <- 0
+
+```
+
+# Intro
+
+This is a prelimnary analysis of the Coiba Tool Dataset. You can access all the code and data on Github as this link <https://github.com/bjbarrett/coibatooldata>. You need permission to access this, as it is private, so let me know if you cannot.
+
+First thing we will do is get some basic summary of the dimensions for stone tools.
+```{r width_summary}
+summary(d$width)
+summary(d$length)
+summary(d$thickness)
+```
+## Stone Tool Dimensions
+These first few figures show the dimensions of each stone tool (in mm) plotted againt each other. Thickness is typically the smallest dimension, but it occurs on the dimension of the hammerstone where pounding occurs, width is always the widest dimension followed by length. 
+
+```{r selectivity graphs lw, echo=TRUE, fig.width=5 , fig.height=5}
+lm1 <- lm(length~width , data=d)
+summary(lm1)
+plot(length~width , data=d , ylim=c(0,210) , xlim=c(0,210))
+abline(a = 0, b = 1, col="red")
+
+plot(0,0 , xlim=c(-100,100) , ylim=c(-100,100) , xlab="width (mm)" , ylab="length (mm)" )
+for (i in 1:nrow(d)){
+  draw.ellipse(x=0 , y=0 , a = c(d$width[i])/2, b = c(d$length[i])[1]/2, angle = 0, 
+               nv = 100, border = col.alpha(1,0.2), col = NA, lty = 1, lwd = 1)
+}
+
+```
+
+By definition, tools are always wider than they are long, and these two properties tend to scale together.
+
+```{r selectivity graphs wl, echo=FALSE, fig.width=5 , fig.height=5}
+
+lm2 <- lm(thickness~width , data=d)
+summary(lm2)
+plot(thickness~width , data=d , ylim=c(0,210) , xlim=c(0,210))
+abline(a = 0, b = 1, col="red")
+
+plot(0,0 , xlim=c(-100,100) , ylim=c(-100,100)  , xlab="width (mm)" , ylab="thickness (mm)" )
+for (i in 1:nrow(d)){
+  draw.ellipse(x=0 , y=0 , a = c(d$width[i])/2, b = c(d$thickness[i])[1]/2, angle = 0, 
+               nv = 100, border = col.alpha(1,0.2), col = NA, lty = 1, lwd = 1)
+}
+
+```
+
+While length does scale with thickness, this seems to be more constrained.
+
+The thickness/length width graphs seem most interesting looking at
+```{r selectivity graphs tl, echo=FALSE, fig.width=5 , fig.height=5}
+lm3 <- lm(thickness~length , data=d)
+summary(lm3)
+plot(thickness~length , data=d , ylim=c(0,210) , xlim=c(0,210))
+abline(a = 0, b = 1, col="red")
+
+plot(0,0 , xlim=c(-100,100) , ylim=c(-100,100)  , xlab="length (mm)" , ylab="thickness (mm)" )
+for (i in 1:nrow(d)){
+  draw.ellipse(x=0 , y=0 , a = c(d$length[i])/2, b = c(d$thickness[i])[1]/2, angle = 0, 
+               nv = 100, border = col.alpha(1,0.2), col = NA, lty = 1, lwd = 1)
+}
+```
+
+## Resource differences in mass
+
+Here we can start to examine mass differences of stone tools, as it relates to resource being processed. One challenge of this data is that often we find hammers with multiple resources underneath them. We can account for this by using an interaction effect. I fit this model with STAN using Richard's map2stan package. Outcome is a gamma distribution with an log-link function.
+
+```{r weight GLMS by resource, echo=FALSE , results = 'hide'}
+
+m2 <- map2stan(
+  alist(
+    weight ~ dgamma2(mu,scale),
+    log(mu) ~ a + bA*almendras_yes + (bS + bAS*almendras_yes)*shells_yes ,
+    a ~ dnorm(1,2),
+    c(bA,bS,bAS)  ~ dnorm(0,1),
+    scale ~ dexp(0.5)
+  ),
+  
+  data=d, cores=4 , warmup=1000 , iter=2000 , WAIC=TRUE, constraints=list(scale="lower=0") , sample=TRUE, 
+)
+
+```
+
+```{r weigt glm summary, echo=TRUE}
+precis(m2)
+```
+
+These interactions are hard to interpret but it is easier to visualize model predictions below. From parametr estimates it is clear that snails use smaller hammerstones to open. We reliably see that tools used to open shells (in this case hermit crabs and-less likely- snails) are far smaller than those used to open almendras and other resources. 
+
+```{r plot of tool X resource, echo=FALSE, fig.width=5 , fig.height=5}
+
+post <- extract.samples(m2)
+plot(density(d$weight), xlim=c(min(d$weight),max((d$weight)))  , col="grey" , ylim=c(-0.0002,0.014) , main="" , xlab="mean stone tool weight (g)" , cex.lab=1.5, yaxt='n' , ylab="")
+#almendras, no shells
+xx <- exp(with(post, a + bA * 1 + (bS + bAS * 1) * 0) ) 
+farbe <- "green"
+pts <- d$weight[d$almendras_yes==1 & d$shells_yes==0]
+dens( xx , add=TRUE , col=farbe)
+shade( density(xx) , lim= as.vector(HPDI(xx, prob=0.9999)) , col = col.alpha(farbe, 0.5))
+points( pts , rep(-0.0001, length(pts)) , pch=19 , col=col.alpha(farbe , 0.2) , cex=0.5)
+
+#almendras and shells
+xx <-exp(with(post, a + bA * 1 + (bS + bAS * 1) * 1) ) 
+farbe <- "grey"
+pts <- d$weight[d$almendras_yes==1 & d$shells_yes==1]
+dens( xx , add=TRUE , col=farbe)
+shade( density(xx) , lim= as.vector(HPDI(xx, prob=0.9999)) , col = col.alpha(farbe, 0.5))
+points( pts , rep(-0.0002, length(pts)) , pch=19 , col=col.alpha(farbe , 0.2) , cex=0.5)
+
+#shells no almendras
+xx <-exp(with(post, a + bA * 0 + (bS + bAS * 0) * 1) ) 
+farbe <- "orange"
+pts <- d$weight[d$almendras_yes==0 & d$shells_yes==1]
+dens( xx , add=TRUE , col=farbe)
+shade( density(xx) , lim= as.vector(HPDI(xx, prob=0.9999)) , col = col.alpha(farbe, 0.5))
+points( pts , rep(-0.0003, length(pts)) , pch=19 , col=col.alpha(farbe , 0.2) , cex=0.5)
+
+#no shells no almendras
+xx <-exp(with(post, a + bA * 0 + (bS + bAS * 0) * 0) ) 
+farbe <- "blue"
+pts <- d$weight[d$almendras_yes==0 & d$shells_yes==0]
+dens( xx , add=TRUE , col=farbe)
+shade( density(xx) , lim= as.vector(HPDI(xx, prob=0.9999)) , col = col.alpha(farbe, 0.5))
+points( pts , rep(-0.0004, length(pts)) , pch=19 , col=col.alpha(farbe , 0.2) , cex=0.5)
+
+
+legend("topright", c("almendras, no shells" , "almendras & shells" , "shells, no almendras" , "no shells or almendras, yes other"), pch=15, col=c("green" , "grey" , "orange" , "blue"), box.col=NA, cex=0.6 )
+
+```
+
+We do have data on enough halloween crabs to do similar analyses, and to some extent marine snails. We need to do bayesian approaches for this because 'lm'  We will have to modify out protocols in the future as we will need to differentiate between hermit crabs, marine snails, and freshwater snails. If we can collect each sample, this can be analyzed accurately later.
+
+# Macaca vs. Cebus comparisons
+
+To start we can do some preliminary analyses of comparisons between stone tools used by macaques and capuchins. Whicle we do have Nerite snails, we will just compare almendras/sea almonds to beging with.
+
+```{r interspecies comparison data pred, echo=FALSE}
+##terminalia catappa
+mtc <- read.csv("/Users/BJB/Downloads/coibatooldata-master/macaca_sea_almond.csv")
+ctc <- d[d$almendras_yes==1,]
+mtc$weight <- mtc$Weight_g
+mtc$width <- mtc$Width_mm
+mtc$length <- mtc$Length_mm
+mtc$thickness <- mtc$Tickness_mm
+
+mtc <- select(mtc, weight=Weight_g , width=Width_mm , length=Length_mm , thickness=Tickness_mm)
+ctc <- select(ctc, weight, width, length , thickness)
+ctc$genus <- "Cebus"
+mtc$genus <- "Macaca"
+tc <- rbind(ctc,mtc)
+mtc$weight <- mtc$Weight_g
+tc$genus_index <- as.integer(as.factor(tc$genus))
+```
+
+```{r interspecies comparison weight model pred , results = 'hide'}
+#model of weight differences
+mtc1 <- map2stan(
+  alist(
+    weight ~ dgamma2(mu,scale),
+    log(mu) ~ a[genus_index] ,
+    a[genus_index] ~ dnorm(1,2),
+    scale ~ dexp(0.5)
+  ),
+  
+  data=tc, cores=4 , warmup=1000 , iter=2000 , WAIC=TRUE, constraints=list(scale="lower=0") , sample=TRUE, 
+)
+precis(mtc1 , depth=2)
+post <- extract.samples(mtc1)
+```
+
+```{r interspecies weight comparison GLM preds, echo=FALSE}
+precis(mtc1 , depth=2)
+post <- extract.samples(mtc1)
+##plot it
+pal <- wes_palette("Zissou1", 2, type = "continuous")
+
+plot(density(tc$weight), xlim=c(min(tc$weight),max((tc$weight)))  , col="grey" , ylim=c(-0.0002,0.012) , main="" , xlab="mean T. catappa stone tool weight (g)" , cex.lab=1.5, yaxt='n' , ylab="")
+#almendras, no shells
+#cebus
+xx <- exp(post$a[,1]) 
+farbe <- pal[1]
+dens( tc$weight[tc$genus_index==1]  , col=farbe , add=TRUE)
+pts <- tc$weight[tc$genus_index==1]
+dens( xx  , col=farbe , add=TRUE)
+shade( density(xx) , lim= as.vector(HPDI(xx, prob=0.9999)) , col = col.alpha(farbe, 0.5))
+points( pts , rep(-0.0001, length(pts)) , pch=19 , col=col.alpha(farbe , 0.2) , cex=0.5)
+##macacque
+xx <- exp(post$a[,2]) 
+farbe <- pal[2]
+dens( tc$weight[tc$genus_index==2]  , col=farbe , add=TRUE)
+pts <- tc$weight[tc$genus_index==2]
+dens( xx , add=TRUE , col=farbe )
+shade( density(xx) , lim= as.vector(HPDI(xx, prob=0.9999)) , col = col.alpha(farbe, 0.5))
+points( pts , rep(-0.0002, length(pts)) , pch=19 , col=col.alpha(farbe , 0.2) , cex=0.5)
+
+legend("topright", c("Cebus" , "Macaca"), pch=15, col=pal, box.col=NA, cex=1 )
+```
+
+Below are similar graphs comparing the two speices on basic dimensions. The intersting thi to me is that macaques seem to select less thick tools compared to capuchins, but they tend to be wider. The width length scaling seems similar, but biased towards length. I wonder if this is relate to raw material avaiability or hand morphology as macaques are a fair bit larger than capuchins. I think capuchins might have more opposable style thu,bs with precisions grips too.
+
+```{r interspecies weight comparison diam plots, echo=FALSE}
+
+plot(length~width , data=tc , ylim=c(0,300) , xlim=c(0,300) , col=pal[tc$genus_index])
+abline(a = 0, b = 1, col=1 , lw=1)
+legend("bottomright", c("Cebus" , "Macaca"), pch=15, col=pal, box.col=NA, cex=1 )
+
+plot(thickness~width , data=tc , ylim=c(0,300) , xlim=c(0,300) , col=pal[tc$genus_index])
+abline(a = 0, b = 1, col=1)
+legend("topleft", c("Cebus" , "Macaca"), pch=15, col=pal, box.col=NA, cex=1 )
+
+plot(thickness~length , data=tc , ylim=c(0,300) , xlim=c(0,300) , col=pal[tc$genus_index])
+abline(a = 0, b = 1, col=1)
+legend("topleft", c("Cebus" , "Macaca"), pch=15, col=pal, box.col=NA, cex=1 )
+
+####width by length
+plot(0,0 , xlim=c(-150,150) , ylim=c(-150,150) , xlab="width (mm)" , ylab="length (mm)" )
+for (i in 1:nrow(tc)){
+  draw.ellipse(x=0 , y=0 , a = c(tc$width[i])/2, b = c(tc$length[i])/2, angle = 0, 
+               nv = 100, border = col.alpha( pal[tc$genus_index[i]] , 0.2), col = NA, lty = 1, lwd = 1)
+}
+
+for (i in 1:2){
+  draw.ellipse(x=0 , y=0 , a = mean(tc$width[tc$genus_index==i])/2, b = mean(tc$length[tc$genus_index==i])/2, angle = 0,  nv = 100, border = pal[i], col = NA, lty = 1, lwd = 3)
+}
+legend("topleft", c("Cebus" , "Macaca"), pch=15, col=pal, box.col=NA, cex=1 )
+
+
+####width by thickness
+plot(0,0 , xlim=c(-150,150) , ylim=c(-150,150)  , xlab="width (mm)" , ylab="thickness (mm)" )
+for (i in 1:nrow(tc)){
+  draw.ellipse(x=0 , y=0 , a = c(tc$width[i])/2, b = c(tc$thickness[i])/2, angle = 0, 
+               nv = 100, border = col.alpha(pal[tc$genus_index[i]],0.2), col = NA, lty = 1, lwd = 1)
+}
+
+for (i in 1:2){
+  draw.ellipse(x=0 , y=0 , a = mean(tc$width[tc$genus_index==i])/2, b = mean(tc$thickness[tc$genus_index==i])/2, angle = 0,  nv = 100, border = pal[i], col = NA, lty = 1, lwd = 3)
+}
+legend("topleft", c("Cebus" , "Macaca"), pch=15, col=pal, box.col=NA, cex=1 )
+
+
+plot(0,0 , xlim=c(-150,150) , ylim=c(-150,150)  , xlab="length (mm)" , ylab="thickness (mm)" )
+for (i in 1:nrow(tc)){
+  draw.ellipse(x=0 , y=0 , a = c(tc$length[i])/2, b = c(tc$thickness[i])/2, angle = 0, 
+               nv = 100, border = col.alpha(pal[tc$genus_index[i]],0.2), col = NA, lty = 1, lwd = 1)
+}
+
+for (i in 1:2){
+  draw.ellipse(x=0 , y=0 , a = mean(tc$length[tc$genus_index==i])/2, b = mean(tc$thickness[tc$genus_index==i])/2, angle = 0,  nv = 100, border = pal[i], col = NA, lty = 1, lwd = 3)
+}
+legend("topleft", c("Cebus" , "Macaca"), pch=15, col=pal, box.col=NA, cex=1 )
+
+```
