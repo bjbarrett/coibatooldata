@@ -3,7 +3,7 @@ title: "coiba_tool_data_analysis"
 author: "Brendan Barrett"
 date: "11/26/2020"
 output: html_document
-fig_width: 6 
+fig_width: 4 
 fig_height: 6 
 ---
 
@@ -227,7 +227,7 @@ precis(mtc1 , depth=2)
 post <- extract.samples(mtc1)
 ```
 
-```{r interspecies weight comparison GLM preds, echo=FALSE}
+```{r interspecies weight comparison GLM preds, echo=FALSE , fig.width=5 , fig.height=5}
 precis(mtc1 , depth=2)
 post <- extract.samples(mtc1)
 ##plot it
@@ -255,9 +255,9 @@ points( pts , rep(-0.0002, length(pts)) , pch=19 , col=col.alpha(farbe , 0.2) , 
 legend("topright", c("Cebus" , "Macaca"), pch=15, col=pal, box.col=NA, cex=1 )
 ```
 
-Below are similar graphs comparing the two speices on basic dimensions. The intersting thi to me is that macaques seem to select less thick tools compared to capuchins, but they tend to be wider. The width length scaling seems similar, but biased towards length. I wonder if this is relate to raw material avaiability or hand morphology as macaques are a fair bit larger than capuchins. I think capuchins might have more opposable style thu,bs with precisions grips too.
+Below are similar graphs comparing the two speices on basic dimensions. The intersting thi to me is that macaques seem to select less thick tools compared to capuchins, but they tend to be wider. The width length scaling seems similar, but biased towards length. I wonder if this is relate to raw material avaiability or hand morphology as macaques are a fair bit larger than capuchins. I think capuchins might have more opposable style thu,bs with precisions grips too. 
 
-```{r interspecies weight comparison diam plots, echo=FALSE}
+```{r interspecies weight comparison diam plots, echo=FALSE , fig.width=5 , fig.height=5}
 
 plot(length~width , data=tc , ylim=c(0,300) , xlim=c(0,300) , col=pal[tc$genus_index])
 abline(a = 0, b = 1, col=1 , lw=1)
