@@ -9,4 +9,4 @@ Data Sheets in CSV form
 
 Macaque Tool Data from Lydia
 
-Rmd of prlim results
+Rmd of prelim results
