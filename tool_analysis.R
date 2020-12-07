@@ -5,6 +5,7 @@ library(janitor)
 library(rethinking)
 library(dplyr)
 library(wesanderson)
+###blah
 ## load data
 mar2018 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/jicaron_mar_2018.csv")
 jul2018 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/jicaron_july_2018.csv")

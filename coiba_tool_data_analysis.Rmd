@@ -191,7 +191,7 @@ We do have data on enough halloween crabs to do similar analyses, and to some ex
 
 # Macaca vs. Cebus comparisons
 
-To start we can do some preliminary analyses of comparisons between stone tools used by macaques and capuchins. Whicle we do have Nerite snails, we will just compare almendras/sea almonds to beging with.
+To start we can do some preliminary analyses of comparisons between stone tools used by macaques and capuchins. Whicle we do have Nerite snails, we will just compare almendras/sea almonds to begin with.
 
 ```{r interspecies comparison data pred, echo=FALSE}
 ##terminalia catappa
