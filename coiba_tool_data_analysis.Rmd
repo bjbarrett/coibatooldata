@@ -7,7 +7,7 @@ fig_width: 4
 fig_height: 6 
 ---
 
-```{r data import, include=FALSE}
+```{r data import, include=FALSE}                
 library(plotrix)
 library(gtools)
 library(janitor)
@@ -16,10 +16,10 @@ library(dplyr)
 library(wesanderson)
 
 ## load data
-mar2018 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/jicaron_mar_2018.csv")
-jul2018 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/jicaron_july_2018.csv")
-jul2017jan2018 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/jicaron_july_2017_jan_2018.csv")
-janmar2019 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/Jan March 2019.csv")
+mar2018 <- read.csv("data/tool_data/jicaron_mar_2018.csv")
+jul2018 <- read.csv("data/tool_data/jicaron_july_2018.csv")
+jul2017jan2018 <- read.csv("data/tool_data/jicaron_july_2017_jan_2018.csv")
+janmar2019 <- read.csv("data/tool_data/Jan March 2019.csv")
 
 ##add nut to this from datasets where it is missing
 mar2018$NUT <- 0

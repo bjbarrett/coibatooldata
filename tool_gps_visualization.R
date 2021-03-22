@@ -14,3 +14,7 @@ w201903 <- readOGR(dsn = "/Users/BJB/Dropbox/Coiba Tool Images/GPX/Tool Sites Ma
 w201903 <- readOGR(dsn = "/Users/BJB/Dropbox/Coiba Tool Images/GPX/Tool Sites Mar 2019.GPX", layer="waypoints")
 
 mapview(w201707201901 , col.region="red") + mapview(w201803 , col.region="orange") + mapview(w201807 , col.region="yellow") + mapview(w201901 , col.region="green") + mapview(w201903 , col.region="blue")
+
+mapview(w201803)
+w201803$name
+str(w201903)
