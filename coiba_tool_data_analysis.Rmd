@@ -166,7 +166,7 @@ points( pts , rep(-0.0001, length(pts)) , pch=19 , col=col.alpha(farbe , 0.2) , 
 xx <-exp(with(post, a + bA * 1 + (bS + bAS * 1) * 1) ) 
 farbe <- "grey"
 pts <- d$weight[d$almendras_yes==1 & d$shells_yes==1]
-dens( xx , add=TRUE , col=farbe)
+dens( xx , add=TRUE , col=farbe , xlim=c(0,2500))
 shade( density(xx) , lim= as.vector(HPDI(xx, prob=0.9999)) , col = col.alpha(farbe, 0.5))
 points( pts , rep(-0.0002, length(pts)) , pch=19 , col=col.alpha(farbe , 0.2) , cex=0.5)
 
@@ -186,6 +186,9 @@ dens( xx , add=TRUE , col=farbe)
 shade( density(xx) , lim= as.vector(HPDI(xx, prob=0.9999)) , col = col.alpha(farbe, 0.5))
 points( pts , rep(-0.0004, length(pts)) , pch=19 , col=col.alpha(farbe , 0.2) , cex=0.5)
 
+#mat surv
+dens(raw_avail$WEIGHT , add=TRUE , col="red")
+points( raw_avail$WEIGHT , rep(-0.0005, length(raw_avail$WEIGHT)) , pch=19 , col=col.alpha("red", 0.2) , cex=0.5)
 
 legend("topright", c("almendras, no shells" , "almendras & shells" , "shells, no almendras" , "no shells or almendras, yes other"), pch=15, col=c("green" , "grey" , "orange" , "blue"), box.col=NA, cex=0.6 )
 
