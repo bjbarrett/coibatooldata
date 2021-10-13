@@ -20,7 +20,7 @@ mar2018 <- read.csv("data/tool_data/jicaron_mar_2018.csv")
 jul2018 <- read.csv("data/tool_data/jicaron_july_2018.csv")
 jul2017jan2018 <- read.csv("data/tool_data/jicaron_july_2017_jan_2018.csv")
 janmar2019 <- read.csv("data/tool_data/Jan March 2019.csv")
-
+raw_avail <- read.csv("data/tool_data/raw_material_survey/TransectsJicaron.csv", sep=";")
 ##add nut to this from datasets where it is missing
 mar2018$NUT <- 0
 janmar2019$NUT <- 0
@@ -78,6 +78,8 @@ lm1 <- lm(length~width , data=d)
 summary(lm1)
 plot(length~width , data=d , ylim=c(0,210) , xlim=c(0,210))
 abline(a = 0, b = 1, col="red")
+points(raw_avail$WIDTH,raw_avail$LENGTH , col="blue")
+points(d$width,d$length , col="black")
 
 plot(0,0 , xlim=c(-100,100) , ylim=c(-100,100) , xlab="width (mm)" , ylab="length (mm)" )
 for (i in 1:nrow(d)){
@@ -95,6 +97,7 @@ lm2 <- lm(thickness~width , data=d)
 summary(lm2)
 plot(thickness~width , data=d , ylim=c(0,210) , xlim=c(0,210))
 abline(a = 0, b = 1, col="red")
+points(raw_avail$WIDTH,raw_avail$HEIGHT , col="blue")
 
 plot(0,0 , xlim=c(-100,100) , ylim=c(-100,100)  , xlab="width (mm)" , ylab="thickness (mm)" )
 for (i in 1:nrow(d)){
@@ -112,6 +115,7 @@ lm3 <- lm(thickness~length , data=d)
 summary(lm3)
 plot(thickness~length , data=d , ylim=c(0,210) , xlim=c(0,210))
 abline(a = 0, b = 1, col="red")
+points(raw_avail$LENGTH,raw_avail$HEIGHT , col="blue")
 
 plot(0,0 , xlim=c(-100,100) , ylim=c(-100,100)  , xlab="length (mm)" , ylab="thickness (mm)" )
 for (i in 1:nrow(d)){
