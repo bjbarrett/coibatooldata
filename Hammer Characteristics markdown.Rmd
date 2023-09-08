@@ -1,0 +1,464 @@
+---
+title: "Hammer Characteristics & Selection"
+author: "Meredith Carlson"
+date: "4/24/2023"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Preparing the data  
+
+This document contains preliminary analysis of the characteristics of hammerstones and raw materials from Coiba and Jicaron. In this intro section we will prepare the data.
+
+First, read in the Capuchin Tool Surveying data from Kobo, updated through January 2023 field trip:  
+
+```{r}
+library(plotrix)
+```
+
+```{r}
+survey.01.23 <- read.csv("~/Documents/COIBA CEBUS Dissertation/Raw Data/Capuchin Tool Surveying (Kobo)/CTS_2023_01.csv", sep=",", header=T)
+
+survey.01.23$hardness <- rowMeans(survey.01.23[, c("hardness_1_hld", "hardness_2_hld", "hardness_3_hld", "hardness_4_hld", "hardness_5_hld", "hardness_6_hld", "hardness_7_hld", "hardness_8_hld", "hardness_9_hld")])
+```
+
+Next, we will subset the data by island, and by raw materials vs. tools. 
+
+To subset the observations from **Coiba** (Rio Escondido):
+```{r}
+coiba <- subset(survey.01.23, island == "Coiba")  #all observations, n = 110
+
+coiba_tools <- subset(coiba, tool == 1 & length_mm_max > 0 & fragmentation == "whole" | fragmentation == "refit" ) #tools (excluding incomplete refits)
+
+coiba_rm <- subset(coiba, tool == 0) #raw materials
+```
+
+And we will do the same for observations from Jicaron:
+
+```{r}
+jic <- subset(survey.01.23, island =="Jicaron")  #all observations, n = 233
+
+jic_tools <- subset(jic, tool == 1 & length_mm_max > 0 & fragmentation == "whole" | fragmentation == "refit")  #tools (excluding incomplete refits)
+```
+
+For Jicaron, all RM observations from the main "survey.01.23" dataset are from the beach. 
+
+```{r}
+j.beach.rm <- subset(jic, tool == 0)     #raw materials
+```
+
+Raw materials sourced from streams are recorded in a separate dataset from July 2021 (collected by ZG).
+
+```{r}
+j.stream.rm <- read.csv("~/Documents/COIBA CEBUS Dissertation/Raw Data/Manual Data/Jicaron_stream_RM.csv", sep=",", header=T)  
+
+	##rename columns for consistency
+	
+names(j.stream.rm)[3] = "length_mm_max"
+names(j.stream.rm)[4] = "width_mm_max"
+names(j.stream.rm)[5] = "THICKNESS"
+names(j.stream.rm)[6] = "weight_g"
+```
+
+We will bind these to create a dataframe that includes Jicaron RM from all sources (stream and beach):
+
+```{r}
+jic_rm <- merge(j.stream.rm, j.beach.rm, by=c("weight_g", "length_mm_max", "width_mm_max","THICKNESS"), all = TRUE, all.x = TRUE, all.y = TRUE)
+```
+
+We will also subset the tools by function (resource type). For Coiba tools, the two functions are Astrocaryum nut processing and invertebrate shell processing. For Jicaron the functions are almendra nut processing and shell processing. 
+
+```{r}
+#Coiba
+c.astro <- subset(coiba_tools,  Astrocaryum == 1,   
+select=c(weight_g, debris_at_site, length_mm_max, width_mm_max,
+THICKNESS, hardness, comments))
+
+c.shell <- subset(coiba_tools,  
+debris_at_site.river_snail == 1 |   
+debris_at_site.hermit_crabs ==1, 
+select=c(weight_g, debris_at_site, length_mm_max, width_mm_max,  
+THICKNESS, hardness, comments))
+
+#Jicaron
+j.almen  <- subset(jic_tools,  
+debris_at_site == "almendra", select=c(weight_g, length_mm_max,  
+width_mm_max, THICKNESS, debris_at_site, hardness, comments))
+
+j.shell <- subset(jic_tools,   
+debris_at_site.river_snail == 1 | debris_at_site.hermit_crabs ==1, select=c(weight_g, debris_at_site, length_mm_max, width_mm_max, THICKNESS, hardness, comments))
+```
+
+We will also subset the raw materials based on the sampling location, either  Beach or Stream. For the Coiba data, these observations are subsetted manually by column number. Raw material collected from the beach was recorded using "RMB" site names.
+
+```{r}
+c.beach.rm <- coiba_rm[c(22:31)] ##("RMB" site names)
+
+c.stream.rm <- coiba_rm[c(1:21 , 32:49), ] 
+
+```
+
+## Tool Characteristics by Function
+
+We can now move on to looking at the differences between tools and raw materials, and between tools with different functions.
+
+### Cobble Weight
+
+#### Jicaron
+We start with basic summaries of cobble weights on Jicaron:
+
+```{r}
+summary(j.almen$weight_g)
+summary(j.shell$weight_g)
+summary(j.stream.rm$weight_g)
+summary(j.beach.rm$weight_g)
+```
+
+Next we'll look at some boxplots for cobble weight in these categories:
+
+```{r}
+boxplot(j.almen$weight_g, j.shell$weight_g, j.beach.rm$weight_g,j.stream.rm$weight_g,  
+  main="Tool and Raw Material Weights \n Jicaron", at=c(1, 2, 3, 4), 
+  names=c("Hammerstones \n SEA ALMOND \n(n=78)", "Hammerstones \n SHELL  \n (n=20)", "Raw Material\nBEACH \n(n=59)", "Raw Material \nSTREAM \n(n=81)"),  
+col=c("salmon2", "cornflowerblue", "darkseagreen1", "darkseagreen4"), ylab="Weight (g)", notch=FALSE, cex.lab=0.6, cex.axis=0.6, cex.main=0.9) 
+
+``` 
+
+Immediately, we can see that raw materials sourced from streams seem to be constrained in weight. We can also see that tools used exclusively on almendras seem to be heavier than those used exclusively on shells. 
+
+We'll also do this as a violin plot to get a better sense of the distributions:
+
+```{r}
+violin_plot(X=j.almen$weight_g, at=1:4, col="salmon2", main="Cobble Weights \n Jicaron", ylab="weight (g)", x_axis_labels=c("Hammers \n SEA ALMOND", "Hammers \n SHELL", "Raw Material \n BEACH", "Raw Material \n STREAM"))
+violin_plot(X=j.shell$weight_g, at=2, col="cornflowerblue", add=T, violin_width=1)
+violin_plot(X=j.beach.rm$weight_g, col="darkseagreen1", at=3, add=T, violin_width = 1)
+violin_plot(X=j.stream.rm$weight_g, col="darkseagreen4", at=4, add=T, violin_width = 1)
+```
+
+Now we'll test for difference in weights between the two function categories, Sea Almond tools and Shell tools to see if this relationship is significant:
+
+```{r}
+wilcox.test(j.almen$weight_g, j.shell$weight_g, paired=FALSE, exact=FALSE) 
+```
+
+The hammers associated with each resource have significant differences in weight. 
+
+We can also test whether the weights differ from available raw materials   
+
+***(does it make sense to do this analysis separated out by raw material location? The samples are pretty obviously distinct...)***
+
+```{r}
+kruskal.test(list(j.almen$weight_g, j.shell$weight_g, jic_rm$weight_g))
+```
+
+Shell tool and almendra tool weights are not only distinct from one another, but also distinct from the weights of locally available raw materials. This provides some evidence for functionally-specific selection of tools by the capuchins.
+
+#### Coiba
+
+We also need to assess the same thing in the Coiba population. Starting off by looking at basic summaries of cobble weights once again:
+
+```{r}
+summary(c.astro$weight_g)
+summary(c.shell$weight_g)
+summary(c.beach.rm$weight_g)
+```
+
+This already gives us a sense that there's something different going on with tool weights between hammers used on shells and hammers used on *Astrocaryum* nuts. We'll take a closer look at this with boxplots. Keep in mind that the nuts being opened on Coiba are *Astrocaryum spp.* rather than *Terminalia catappa*.
+
+```{r}
+boxplot(c.astro$weight_g, c.shell$weight_g, c.beach.rm$weight_g, c.stream.rm$weight_g, main="Tool and Raw Material Weights \n Coiba", at=c(1, 2, 3, 4),  
+   names=c("Hammerstones \n ASTROCARYUM \n(n=14)", "Hammerstones \n SHELL  \n (n=64)", "Raw Material\nBEACH \n(n=10)",   
+   "Raw Material \nSTREAM \n(n=39)"), col=c("salmon2", "cornflowerblue", "darkseagreen1", "darkseagreen4"), ylab="Weight (g)", notch=FALSE, cex.lab=0.6, cex.axis=0.6, cex.main=0.9)
+```
+
+```{r}
+violin_plot(X=c.astro$weight_g, at=1:4, col="salmon2", main="Cobble Weights \n Coiba", ylab="weight (g)", x_axis_labels=c("Hammers \n SEA ALMOND", "Hammers \n SHELL", "Raw Material \n BEACH", "Raw Material \n STREAM"), ylim=c(0,2000))
+violin_plot(X=c.shell$weight_g, at=2, col="cornflowerblue", add=T, violin_width=1)
+violin_plot(X=c.beach.rm$weight_g, col="darkseagreen1", at=3, add=T, violin_width = 1)
+#violin_plot(X=c.stream.rm$weight_g, col="darkseagreen4", at=4, add=T, violin_width = 1, na.rm =TRUE)
+```
+
+
+It's clear that the mean tool weight of hammers used on *Astrocaryum* nuts is greater than that of hammers used for opening shells. We'll now test for this difference.
+
+```{r}
+wilcox.test(c.astro$weight_g, c.shell$weight_g, paired=FALSE, exact=FALSE) 
+```
+
+Once again, the weights are different based on tool function. We will test for difference in weight across both tool types and pooled raw materials:
+
+```{r}
+kruskal.test(list(c.astro$weight_g, c.shell$weight_g, coiba_rm$weight_g))
+```
+
+The weights of each tool type are different from the weights of sampled raw materials.
+
+#### Can these apparent differences in weight by tool function be explained by location?
+
+We need to look into whether the differences in tool weight by tool function can be explained by the location of the site. We know that raw material weight varies by the source of the material (beach vs. stream). Is it possible this pattern accounts for nut-cracking tools appearing to be heavier than shell-cracking tools?
+
+**Assuming this is better assessed by modelling... let me think this through**
+
+### Cobble Length
+
+We're also interested in the overall size of the cobbles, as captured by the maximum length. 
+
+#### Jicaron
+Again, we'll start off with basic summaries.
+
+```{r}
+summary(j.almen$length_mm_max)
+summary(j.shell$length_mm_max)
+summary(j.beach.rm$length_mm_max)
+summary(j.stream.rm$length_mm_max)
+```
+
+Hammers associated with almendras have the largest mean length. This is perhaps not surprising, since we've already seen a bias towards heavier almendra tools. Let's take a look at the cobble lengths with boxplots:
+
+```{r}
+boxplot(j.almen$length_mm_max, j.shell$length_mm_max, j.beach.rm$length_mm_max, j.stream.rm$length_mm_max, main="Maximum Cobble Length \n Jicaron", at=c(1, 2, 3,4), names=c("Hammerstones \n Sea Almond. \n(n=78)", "Hammerstones \n shells \n (n=76)", "Raw Material \n beach \n(n=59)", "Raw Material \n stream \n (n=81)"), col=c("salmon2", "cornflowerblue", "darkseagreen1", "darkseagreen4"), ylim=c(0,400), ylab="Maximum Length (mm)", notch=FALSE, cex.lab=0.6, cex.axis=0.6, cex.main=0.9)
+```
+
+And violin plots:
+```{r}
+violin_plot(X=j.almen$length_mm_max, at=1:4, col="salmon2", main="Cobble Length \n Jicaron", ylab="max. length (mm)", x_axis_labels=c("Hammers \n SEA ALMOND", "Hammers \n SHELL", "Raw Material \n BEACH", "Raw Material \n STREAM"))
+violin_plot(X=j.shell$length_mm_max, at=2, col="cornflowerblue", add=T, violin_width=1)
+violin_plot(X=j.beach.rm$length_mm_max, col="darkseagreen1", at=3, add=T, violin_width = 1)
+violin_plot(X=j.stream.rm$length_mm_max, col="darkseagreen4", at=4, add=T, violin_width = 1)
+```
+
+
+Raw materials from streams stand out here as being particularly small. Let's check if almendra-associated hammerstones are actually longer in maximum length than shell-associated hammers:
+
+```{r}
+wilcox.test(j.almen$length_mm_max, j.shell$length_mm_max, paired=FALSE, exact=FALSE) 
+```
+
+
+#### Coiba
+
+```{r}
+summary(c.astro$length_mm_max)
+summary(c.shell$length_mm_max)
+summary(c.beach.rm$length_mm_max)
+summary(c.stream.rm$length_mm_max)
+```
+
+```{r}
+boxplot(c.astro$length_mm_max, c.shell$length_mm_max, c.beach.rm$length_mm_max, c.stream.rm$length_mm_max, main="Maximum Cobble Length \n Rio Escondido (Coiba)", at=c(1, 2, 3,4), names=c("Hammerstones \n Astrocaryum spp. \n(n=13)", "Hammerstones \n shells \n (n=63)", "Raw Material \n beach \n(n=10)", "Raw Material \n stream \n (n=39)"), col=c("salmon2", "cornflowerblue", "darkseagreen1", "darkseagreen4"), ylim=c(0,400), ylab="Maximum Length (mm)", notch=FALSE, cex.lab=0.6, cex.axis=0.6, cex.main=0.9)
+```
+
+More violin plots:
+```{r}
+violin_plot(X=c.astro$length_mm_max, at=1:4, col="salmon2", main="Cobble Length \n Coiba", ylab="max. length (mm)", x_axis_labels=c("Hammers \n Astrocaryum", "Hammers \n SHELL", "Raw Material \n BEACH", "Raw Material \n STREAM"), ylim=c(0,200))
+violin_plot(X=c.shell$length_mm_max, at=2, col="cornflowerblue", add=T, violin_width=1)
+violin_plot(X=c.beach.rm$length_mm_max, col="darkseagreen1", at=3, add=T, violin_width = 1)
+#violin_plot(X=c.stream.rm$length_mm_max, col="darkseagreen4", at=4, add=T, violin_width = 1)
+```
+
+### Cobble Thickness
+Thickness is by definition the narrowest linear dimension on the stone. That means thickness is also the smallest point where the stone could be gripped when used as a hammer. For this reason, we might expect hammer thickness to be limited by capuchin hand size, while raw materials in the area would not have this limitation. Since this hypothesis is centered around biological constraints, rather than constraints posed by the material being processed, we will treat all tools in one group for this analysis (rather than treating them separately by function).
+
+#### Jicaron
+
+```{r}
+boxplot(jic_tools$THICKNESS, jic_rm$THICKNESS, main="Cobble Thickness \n Jicaron", at=c(1, 2),  
+   names=c("Hammerstones \n (n=174)", "Raw Materials  \n (n=59)"), col=c("thistle3", "darkseagreen3"), ylab="Thickness (mm)", notch=FALSE, cex.lab=0.6, cex.axis=0.6, cex.main=0.9)
+```
+
+And as violin plots:
+```{r}
+violin_plot(X=jic_tools$THICKNESS, at=1:2, col="thistle3", main="Cobble Thickness \n Jicaron", ylab="thickness (mm)", x_axis_labels=c("Hammerstones \n (n=174)", "Raw Materials \n (n=59)"), ylim=c(0,140))
+violin_plot(X=jic_rm$THICKNESS, at=2, col="darkseagreen3", add=T, violin_width=1)
+```
+
+
+Suprisingly, there doesn't seem to be much difference between the thickness of raw materials and the thickness of hammerstones. It's possible that the available materials simply don't exceed the grip size of capuchins. 
+
+Now we'll verify this by testing for difference in thickness between these two groups:
+
+```{r}
+wilcox.test(jic_tools$THICKNESS, jic_rm$THICKNESS, paired=FALSE, exact=FALSE)
+```
+
+Confirming that there is no difference in thicknesses between raw materials and hammerstones. This suggests that the grip size of capuchins may not be a limiting factor in which cobbles can be used as tools. 
+
+
+#### GLM thickness, weight
+
+```{r}
+##glm(jic_tools$THICKNESS ~ jic_tools$WEIGHT)
+```
+
+### Shape Analysis
+We can also get a sense for the difference in overall shape (combination of length and width) with the following visualizations.
+
+First, we'll take a look at all cobbles from both islands, including raw material:
+
+```{r}
+plot(length_mm_max~width_mm_max, data=jic_tools , ylim=c(0,400) , xlim=c(0,400), col="thistle3", pch=16)
+points(jic_rm$width_mm_max, jic_rm$length_mm_max, col="darkseagreen", pch=1)
+points(coiba_tools$width_mm_max, coiba_tools$length_mm_max, col="purple2", pch=18)
+points(coiba_rm$width_mm_max, coiba_rm$length_mm_max, col="darkgreen", pch=5)
+abline(a = 0, b = 1, col="red")
+legend(250, 375, legend=c("Tools: Jicaron", "Tools: Coiba", "RM: Jicaron", "RM: Coiba"), col=c("thistle3", "purple2", "darkseagreen", "darkgreen"), pch=c(16,18,1,5), cex=0.7)
+```
+
+We'll compare the length/width of all tools from Jicaron with all raw materials from Jicaron.Tools are represented in purple, raw materials in green:
+
+```{r}
+plot(0,0 , xlim=c(-200,200) , ylim=c(-200,200) , xlab="width" , ylab="length", main="cobble shape" )
+for (i in 1:nrow(jic_tools)){
+  draw.ellipse(x=0 , y=0 , a = c(jic_tools$width_mm_max[i])/2, b = c(jic_tools$length_mm_max[i])[1]/2, angle = 0, nv = 100, border = c("thistle3"), col = NA, lty = 1, lwd = 1)}
+for (i in 1:nrow(jic_rm)){
+  draw.ellipse(x=0 , y=0 , a = c(jic_rm$width_mm_max[i])/2, b = c(jic_rm$length_mm_max[i])[1]/2, angle = 0, nv = 100, border = c("darkseagreen3"), col = NA, lty = 1, lwd = 1)}
+```
+
+We can also do a comparison of tool functions, comparing hammers used on almendras (red) with those used on shells (blue) 
+
+```{r}
+plot(0,0 , xlim=c(-200,200) , ylim=c(-200,200) , xlab="width" , ylab="length", main="tool shape by function" )
+for (i in 1:nrow(j.almen)){
+  draw.ellipse(x=0 , y=0 , a = c(j.almen$width_mm_max[i])/2, b = c(j.almen$length_mm_max[i])[1]/2, angle = 0, nv = 100, border = c("salmon 2"), col = NA, lty = 1, lwd = 1)}
+for (i in 1:nrow(j.shell)){
+  draw.ellipse(x=0 , y=0 , a = c(j.shell$width_mm_max[i])/2, b = c(j.shell$length_mm_max[i])[1]/2, angle = 0, nv = 100, border = c("cornflowerblue"), col = NA, lty = 1, lwd = 1)}
+```
+
+### Hardness
+Now we'll look at cobble hardness, measured in HLD (Leeb Rebound Hardness).
+
+```{r}
+boxplot(c.astro$hardness, c.shell$hardness, coiba_rm$hardness, main="Cobble Hardness \n Rio Escondido (Coiba)", at=c(1, 2, 3), names=c("Hammerstones \n Astrocaryum spp.", "Hammerstones \n shells", "Raw Material"), col=c("salmon2", "cornflowerblue", "darkseagreen4"), ylim=c(0,900), ylab="hardness (HLD)", notch=FALSE, cex.lab=0.6, cex.axis=0.6, cex.main=0.9)
+```
+
+Test for difference:
+
+```{r}
+wilcox.test(c.astro$hardness, c.shell$hardness, paired=FALSE, exact=FALSE)
+```
+There's no difference in hardness between the different tool functions. This is not particularly suprising, we anticipated a lot of noise in this data due to issues with the instrument. 
+
+Also testing for difference between hardness of Astrocaryum tools and raw materials.
+
+```{r}
+wilcox.test(c.astro$hardness, coiba_rm$hardness, paired=FALSE, exact=FALSE)
+```
+Once again, no difference here. See above.
+
+
+Violin plots not working here for some reason:
+
+```{r}
+#violin_plot(X=c.astro$hardnessx, at=1:3, col="salmon2", main="Cobble Hardness \n Coiba", ylab="hardness (HLD)", x_axis_labels=c("Hammers \n Astrocaryum", "Hammers \n Shell", "Raw Material"), ylim=c(0,900))
+#violin_plot(X=c.shell$hardness, at=2, col="cornflowerblue", add=T, violin_width=1)
+#violin_plot(X=coiba_rm$hardness, col="darkseagreen1", at=3, add=T, violin_width = 1)
+```
+
+
+### Density
+If we want to look at cobble density, we'll need to create a new variable. We do not have exact measurements for volume, so we'll use start by producing **estimates of volume**.
+
+```{r}
+jic_tools$est.vol <- (jic_tools$length_mm_max * jic_tools$width_mm_max*jic_tools$THICKNESS)
+
+jic_rm$est.vol <- (jic_rm$length_mm_max * jic_rm$width_mm_max * jic_rm$THICKNESS)
+
+coiba_tools$est.vol <- (coiba_tools$length_mm_max * coiba_tools$width_mm_max* coiba_tools$THICKNESS)
+
+coiba_rm$est.vol <- (coiba_rm$length_mm_max * coiba_rm$width_mm_max * coiba_rm$THICKNESS)
+```
+
+Now we move onto creating a **density** variable (g/mm3):
+```{r}
+jic_tools$density <- (jic_tools$weight_g/jic_tools$est.vol)
+
+jic_rm$density <- (jic_rm$weight_g/jic_rm$est.vol)
+
+coiba_tools$density <- (coiba_tools$weight_g/coiba_tools$est.vol)
+coiba_rm$density <- (coiba_rm$weight_g/coiba_rm$est.vol)
+```
+
+**Summary of densities** (g/mm3) for all hammerstones from Jicaron: 
+```{r}
+summary(jic_tools$density[is.finite(jic_tools$density)])
+```
+
+Frequency of cobble densities for Coiba:
+```{r}
+p1 <- hist(coiba_tools$density, breaks=c(0.00075, 0.001, 0.00125, 0.0015, 0.00175, 0.002, 0.00225, 0.0025, 0.00275, 0.003, 0.00325, 0.0035, 0.00375, 0.004, 0.00425, 0.0045))
+
+p2 <- hist(coiba_rm$density, xlim=c(0.001, 0.0045), breaks=c(0.00075, 0.001, 0.00125, 0.0015, 0.00175, 0.002, 0.00225, 0.0025, 0.00275))
+
+plot(p1, col="thistle", xlim=c(0.00075, 0.0045),  main="Est. Cobble Density (Coiba)", xlab="Density (g/mm3)")
+plot(p2, col="darkseagreen", xlim=c(0.00075, 0.0045), add=T)
+```
+
+Test of differences in densities between raw materials and tools from Coiba:
+
+```{r}
+wilcox.test(coiba_tools$density, coiba_rm$density, paired=FALSE, exact=FALSE)
+```
+
+
+
+## Taphonomic Analyses
+Up to this point we have looked at how tool properties might vary by the function of the tool. However, we should also consider taphonomic factors, in particular erosion. Tool sites have been categorized in the field according to their erosional environment, that is, the expected frequency with which they would be eroded by flowing water.
+
+These categories are as follows:
+
+**Persistence Type 1** - sites exposed to water on a daily basis, most commonly this includes beach sites in the intertidal.
+
+**Persistence Type 2** - sites exposed to flowing water on a regular, seasonal basis. These may be sites situated within seasonal stream beds, or sites on the beach above the daily high tide line. 
+
+**Persistence Type 3** - sites rarely exposed to water. These sites are not expected to be washed away with an regularity. These include sites high up on stream banks and in the forest. 
+
+The first step is to subset the data by Persistence Site Types:
+
+Persistence Type 1
+```{r}
+jic.p.1 <- subset(jic_tools, site_type_persistence==1) ## n=25
+summary(jic.p.1$weight_g)
+```
+Persistence Type 2
+```{r}
+jic.p.2 <- subset(jic_tools, site_type_persistence==2) ## n=64
+summary(jic.p.2$weight_g)
+```
+Persistence Type 3
+```{r}
+jic.p.3 <- subset(jic_tools, site_type_persistence==3) ## n=38
+summary(jic.p.3$weight_g)
+```
+
+It's important for us to take a look at hammer characteristics based on the erosional environment, because there may be a difference in preservation for different cobble types. We would expect denser hammers to stay in context at sites, even when subject to post-depositional factors.
+
+```{r}
+jp1.dens <- (jic.p.1$density[is.finite(jic.p.1$density)])
+jp2.dens <- (jic.p.2$density[is.finite(jic.p.2$density)])
+jp3.dens <- (jic.p.3$density[is.finite(jic.p.3$density)])
+
+summary(jp1.dens)
+summary(jp2.dens)
+summary(jp3.dens)
+```
+
+Expectation: hammers at persistent (Type 3) sites are denser than those at other sites, due to survivorship bias:
+
+```{r}
+kruskal.test((list(jp1.dens, jp2.dens, jp3.dens)))
+```
+
+```{r}
+boxplot(jp1.dens, jp2.dens, jp3.dens, main="Hammer Density by Erosional Environment \n (Jicaron)", at=c(1, 2, 3), names=c("Type 1 \n Daily \n(n=25)", "Type 2 \n Seasonal \n (n=64)", "Type 3 \n Rare \n(n=38)"), col=c("azure", "cadetblue1", "deepskyblue1"), ylab="Approx. Hammer Density (g/mm3)", notch=TRUE, cex.lab=0.6, cex.axis=0.6, cex.main=0.9)
+```
+
+Not a significant result, but qualitatively, Type 3 (persistent, rarely eroded) sites have less dense hammers. This could potentially be explained by survivorship bias, where less dense hammers are not found as often at regularly erased sites, not because they are not used, but because they are the first to be washed away.
+
+```
+
+
+
+
