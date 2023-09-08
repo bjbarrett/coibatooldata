@@ -7,10 +7,11 @@ library(dplyr)
 library(wesanderson)
 ###blah
 ## load data
-mar2018 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/jicaron_mar_2018.csv")
-jul2018 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/jicaron_july_2018.csv")
-jul2017jan2018 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/jicaron_july_2017_jan_2018.csv")
-janmar2019 <- read.csv("/Users/BJB/Downloads/coibatooldata-master/Jan March 2019.csv")
+mar2018 <- read.csv("~/Dropbox/coibatooldata/data/tool_data/jicaron_mar_2018.csv")
+jul2018 <- read.csv("~/Dropbox/coibatooldata/data/tool_data/jicaron_july_2018.csv")
+jul2017jan2018 <- read.csv("~/Dropbox/coibatooldata/data/tool_data/jicaron_july_2017_jan_2018.csv")
+janmar2019 <- read.csv("~/Dropbox/coibatooldata/data/tool_data/Jan March 2019.csv")
+
 
 ##add nut to this
 mar2018$NUT <- 0
@@ -463,3 +464,13 @@ for (i in 1:2){
   draw.ellipse(x=0 , y=0 , a = mean(tc$length[tc$genus_index==i])/2, b = mean(tc$thickness[tc$genus_index==i])/2, angle = 0,  nv = 100, border = pal[i], col = NA, lty = 1, lwd = 3)
 }
 legend("topleft", c("Cebus" , "Macaca"), pch=15, col=pal, box.col=NA, cex=1 )
+
+
+####load new data from kobo
+
+dk <- read.csv("~/Dropbox/coibatooldata/data/tool_data/coiba_capuchin_tool_survey_kobo/Capuchin_Tool_Surveying_-_all_versions_-_False_-_2023-09-08-09-45-16.csv", sep=";", header=T)
+dk$hardness <- rowMeans(dk[, c("hardness_1_hld", "hardness_2_hld", "hardness_3_hld", 
+                               "hardness_4_hld", "hardness_5_hld", "hardness_6_hld", "hardness_7_hld", 
+                               "hardness_8_hld", "hardness_9_hld") ] , na.rm = TRUE)
+colnames(dk)
+dk2 <- dk[]
