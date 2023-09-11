@@ -67,33 +67,17 @@ dens(dk_tools$weight_g)
 dens(exp(rnorm(100, 5.5,1)))     
 dens(exp(rnorm(10000, 1,2)))     
 
+
+##to do astrocaryum add after other data
+
+### create simplified datalist to read in models
 data_list <- list(
-     weight=dk_tools$weight_g ,
-     almendra=dk_tools$debris_at_site_almendra
+     weight = dk_tools$weight_g ,
+     almendra = dk_tools$debris_at_site_almendra ,
+     nerite = dk_tools$debris_at_site_marine_snail ,
+     herm_crab = dk_tools$debris_at_site_hermit_crabs ,
+     halloween = dk_tools$debris_at_site_halloween_crabs ,
+     river_snail = dk_tools$debris_at_site_river_snail ,
+     bactris = dk_tools$debris_at_site_bactris_fruit
      )
-
-dk_tools$debris_at_site_almendra
-
-mgam <- ulam(
-     alist(
-          weight ~ dgamma2(mu,scale),
-          log(mu) <- a + ba*almendra,
-          a ~ normal(5.5,1.2), #prior for mean
-          ba ~ normal(0,1),
-          scale ~ dexp(1)
-     ),
-     
-     data=data_list, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, 
-)
-
-precis(mgam)
-
-
-exp(6.18)
-
-post <- extract.samples(mgam)
-
-dens(post$a)
-dens(post$scale)
-dgamma2()
 
