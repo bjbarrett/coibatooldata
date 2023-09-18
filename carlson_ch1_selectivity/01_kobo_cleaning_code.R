@@ -2,7 +2,6 @@ library(janitor)
 library(stringr)
 library(rethinking)
 library(cmdstanr)
-library(brms)
 # install.packages("brms")
 #fcns
 numbers_only <- function(x) !grepl("\\D", x)
@@ -69,15 +68,30 @@ dens(exp(rnorm(10000, 1,2)))
 
 
 ##to do astrocaryum add after other data
+sort(unique(dk_tools$comments))
 
+astro  <- c("Astrocaryum spp, rio esc" , "Astrocaryum spp, rio esc" , "Astrocaryum spp., weathered, Rio Esc" , 
+            "Astrocaryum, unknown round thin-shell fruit" , "Asttocaryum," , "Debris: unknown nut" ,
+            "Debris: unknown nut, same as others found today" , "Debris: unknown nut. Adding camera here now." , 
+            "Debris: unknown nut. See pictures." , "In forest, across from mudslide. Unknown fruit/nut. Collected for ID" ,
+            "Other debris: astrocaryum" , "Palm of astrocaryum.Taken back for Meredith to measure. Pedro has it. I have debris in left pocket." , 
+            "Rio escondido, fruit/nut unknown" , "Unidentified nut" , "Unknown nut: round with thin shell")
+dk_tools$astro <- 0
+for (i in 1 : nrow(dk_tools)){
+     dk_tools$astro[i] <- ifelse(dk_tools$comments[i] %in% astro , 1 , 0)
+}
 ### create simplified datalist to read in models
 data_list <- list(
      weight = dk_tools$weight_g ,
+     thickness = dk_tools$thickness ,
+     length = dk_tools$length ,
+     width = dk_tools$width ,
      almendra = dk_tools$debris_at_site_almendra ,
      nerite = dk_tools$debris_at_site_marine_snail ,
      herm_crab = dk_tools$debris_at_site_hermit_crabs ,
      halloween = dk_tools$debris_at_site_halloween_crabs ,
      river_snail = dk_tools$debris_at_site_river_snail ,
-     bactris = dk_tools$debris_at_site_bactris_fruit
+     bactris = dk_tools$debris_at_site_bactris_fruit , 
+     astro = dk_tools$astro
      )
 
