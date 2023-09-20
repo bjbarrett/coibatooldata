@@ -7,13 +7,28 @@ library(cmdstanr)
 numbers_only <- function(x) !grepl("\\D", x)
 
 ####load new data from kobo
-dk_raw <- read.csv("~/Dropbox/coibatooldata/data/tool_data/coiba_capuchin_tool_survey_kobo/Capuchin_Tool_Surveying_-_all_versions_-_False_-_2023-09-08-09-45-16.csv", sep=";", header=T)
+dk_raw <- read.csv("~/Downloads/Capuchin_Tool_Surveying_-_all_versions_-_False_-_2023-09-19-14-07-47.csv", sep=";", header=T)
 # dk$hardness <- rowMeans(dk[, c("hardness_1_hld", "hardness_2_hld", "hardness_3_hld", 
 #                                "hardness_4_hld", "hardness_5_hld", "hardness_6_hld", "hardness_7_hld", 
 #                                "hardness_8_hld", "hardness_9_hld") ] , na.rm = TRUE)
 dk <-dk_raw
 
-##coiba subset
+####coiba subset
+# coiba is all with "location" containing "7.6"
+# jicaron is all with "location" containing "7.2"
+# some have no location data but can still be traced to island -- probably by date? We know what dates we were on which island
+
+sort(dk$location)
+lat <- as.numeric(substr(dk$location, 1, 6))
+dk$island <- ifelse(lat > 7.3 , "coiba" , "jicaron")
+which(dk$island=="coiba")
+coiba_days <- sort(unique(dk$today[which(dk$island=="coiba")]))
+jicaron_days <- sort(unique(dk$today[which(dk$island=="jicaron")]))
+
+
+dk$island <- ifelse( dk$today %in% coiba_days , "coiba" , "jicaron")
+dk$island_index <- as.integer(as.factor(dk$island ))
+
 xx <- as.vector(sapply(dk_raw, function(x)all(any(is.na(x))))) #makes a vector of T/F if all NA
 dk <- dk_raw[,xx==FALSE] #creat dk which removes all columns with all NAs
 colnames(dk)
@@ -61,11 +76,13 @@ dk$used_tool
 
 dk_tools <- dk[dk$used_tool==1,]
 
+#need to remove from this: "cliff", "not a site", "D01", "D02"
+dk_rm <- dk[dk$used_tool==0,]
+
 ##simple
 dens(dk_tools$weight_g)
 dens(exp(rnorm(100, 5.5,1)))     
-dens(exp(rnorm(10000, 1,2)))     
-
+dens(exp(rnorm(10000, 1,2)))  
 
 ##to do astrocaryum add after other data
 sort(unique(dk_tools$comments))
