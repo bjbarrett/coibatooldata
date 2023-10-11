@@ -16,7 +16,7 @@ mw1 <- ulam(
      alist(
           weight ~ dgamma2(mu,scale),
           log(mu) <- a + ba*almendra,
-          a ~ normal(6,1.2), #prior for mean
+          a ~ normal(5,1.), #prior for mean
           ba ~ normal(0,1),
           scale ~ dexp(0.005)
      ),
@@ -78,19 +78,19 @@ mw4 <-  ulam(
 
 m_raw_tc <-  ulam(
      alist(
-          weight ~ dgamma2(mu_tc,scale_tc),
-          log(mu_tc) <- a_tc,
-          
-          thickness ~ dgamma2(mu_raw,scale_raw) ,
+          weight_tc ~ dgamma2(mu_tc,scale_tc), #unique shape and scale for almendras
+          log(mu_tc) <- a_tc, #the regression to which we need to make it just jicaron
+          weight_raw ~ dgamma2(mu_raw,scale_raw) , #raw weight shape and scale
           log(mu_raw) <- a_raw ,
           
-          c(a_raw,a_tc) ~ normal(0,2), #prior for mean
-          c(scale_tc,scale_raw) ~ exponential(1)
+          c(a_raw,a_tc) ~ normal(5,1.8), #prior for mean
+          c(scale_tc,scale_raw) ~ exponential(0.0005) # we need a big scale for weight
      ),
-     
-     data=data_list_raw_tc, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4, 
+
+     data=dl_raw_tc_comp, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4,
 )
 
-dens(rgamma(10000 , rate=1 , shape=2 , scale=4))
+precis(m_raw_tc)
 
+dens( rgamma2(n=10000 , mu=exp(6) , scale=1.2) )
      

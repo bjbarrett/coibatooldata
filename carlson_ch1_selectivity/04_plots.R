@@ -170,28 +170,35 @@ points(ptrs,rep(0, length(ptrs)) , cex=0.7 , col=col.alpha(palette[5],0.33) , pc
 
 
 ######raw
-dens(data_list_raw_tc$weight[data_list_raw_tc$used_tool==1] , col="cornflowerblue" , xlim=c(0 , max(data_list_raw_tc$weight)) , ylim=c(-.0001 , 0.003), lwd=3, xlab="weight (g)")
-abline(v=median(data_list_raw_tc$weight[data_list_raw_tc$used_tool==1]) , col="cornflowerblue")
-dens(data_list_raw_tc$weight[data_list_raw_tc$used_tool==0] , col="darkgrey" , add=TRUE, lwd=3)
-abline(v=median(data_list_raw_tc$weight[data_list_raw_tc$used_tool==0]) , col="darkgrey")
 post <- extract.samples(m_raw_tc)
-curve(dgamma(x , shape=median(post$a_tc) , scale=median(post$scale_tc) ) ,  add=TRUE ,col="cornflowerblue")  #range of mean predictions
 
-for ( i in 1:500 ) {
-     curve(dgamma(x , shape=post$a_raw[i] , scale=1/post$scale_raw[i])  , add=TRUE ,  col=col.alpha("darkgrey",0.05))
-}
-
-precis(m_raw_tc)
-dens(data_list_raw_tc$weight[data_list_raw_tc$used_tool==1] , col="cornflowerblue"  , ylim=c(-.0001 , 3) , lwd=3, xlab="weight (g)" , xlim=c(0,5) )
-abline(v=median(data_list_raw_tc$weight[data_list_raw_tc$used_tool==1]) , col="cornflowerblue")
-dens(data_list_raw_tc$weight[data_list_raw_tc$used_tool==0] , col="darkgrey" , add=TRUE, lwd=3)
-abline(v=median(data_list_raw_tc$weight[data_list_raw_tc$used_tool==0]) , col="darkgrey")
-
-# abline(v=exp(6.33) , col="cornflowerblue" ,lw=3)
-# abline(v=exp(3.86) , col="darkgrey" ,lw=3)
-
-for ( i in 1:1000 ) {
-     curve(dgamma(x , shape=exp(post$a_raw[i]) , scale=post$scale_raw[i])  , add=TRUE ,  col=col.alpha("darkgrey",0.05))
-     curve(dgamma(x , shape=exp(post$a_tc[i]) , scale=post$scale_tc[i])  , add=TRUE ,  col=col.alpha("cornflowerblue",0.05))
-}
-
+pdf(file="carlson_ch1_selectivity/r_plots/weight_tc_raw.pdf" )
+     dens(dl_raw_tc_comp$weight_tc , col="cornflowerblue" , xlim=c(0 , max(dl_raw_tc_comp$weight_raw)) , ylim=c(-.0001 , 0.003), lwd=1, xlab="weight (g)" )
+     abline(v=mean(dl_raw_tc_comp$weight_tc) , col="cornflowerblue")
+     dens(dl_raw_tc_comp$weight_raw , col="darkgrey" , add=TRUE, lwd=1)
+     abline(v=mean(dl_raw_tc_comp$weight_raw) , col="darkgrey")
+     
+     sharks <- mean(exp(post$a_tc))
+     stingrays <- HPDI(exp(post$a_tc))
+     points(sharks , 0.003 , col="cornflowerblue" , pch=1 , cex=0.75)
+     segments(x0=stingrays[[1]] , x1=stingrays[[2]] , y0=0.003 , y1=0.003 , col="cornflowerblue")
+     #raw below
+     sharks <- mean(exp(post$a_raw))
+     stingrays <- HPDI(exp(post$a_raw))
+     points(sharks , 0.003 , col="darkgrey" , pch=1 , cex=0.75)
+     segments(x0=stingrays[[1]] , x1=stingrays[[2]] , y0=0.003 , y1=0.003 , col="darkgrey")
+     #posterior samples for raw
+     for ( i in 1:200 ) {
+          curve(dgamma2(x , mu=exp(post$a_raw[i]) , scale=post$scale_raw[i])  , add=TRUE ,  col=col.alpha("darkgrey",0.05))
+     }
+     #posterior samples for tc
+     for ( i in 1:200 ) {
+          curve(dgamma2(x , mu=exp(post$a_tc[i]) , scale=post$scale_tc[i])  , add=TRUE ,  col=col.alpha("cornflowerblue",0.05))
+     }
+     #plot raw data
+     points(dl_raw_tc_comp$weight_tc , rep(-.00005, length(dl_raw_tc_comp$weight_tc) ) , pch="|"  , col=col.alpha("cornflowerblue",0.25) )
+     points(dl_raw_tc_comp$weight_raw , rep(-.00015, length(dl_raw_tc_comp$weight_raw) ) , pch="|"  , col=col.alpha("darkgrey",0.25) )
+     #legend
+     legend("topright" , legend=c("raw material" , "T. catappa hammerstones") , 
+            fill=c("darkgrey" , "cornflowerblue") , bty='n' )
+dev.off()

@@ -119,7 +119,7 @@ dk$weight_g[dk$used_tool==0 | dk$debris_at_site_almendra==1]
 dk$weight_g
 
 data_list_raw_tc <- list(
-     weight = dk$weight_g[dk$used_tool==0 | dk$debris_at_site_almendra==1]/1000  ,
+     weight = dk$weight_g[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
      thickness = dk$thickness[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
      length = dk$length[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
      width = dk$width[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
@@ -135,3 +135,21 @@ data_list_raw_tc <- list(
 
 str(data_list_raw_tc)
 
+dl_raw_tc_comp <- list(
+     weight_raw = dk$weight_g[dk$used_tool==0 ]  ,
+     thickness_raw = dk$thickness[dk$used_tool==0 ]  ,
+     length_raw = dk$length[dk$used_tool==0 ]  ,
+     width_raw = dk$width[dk$used_tool==0 ]  ,
+     weight_tc = dk$weight_g[dk$used_tool==1 | dk$debris_at_site_almendra==1]  ,
+     thickness_tc = dk$thickness[dk$used_tool==1 | dk$debris_at_site_almendra==1]  ,
+     length_tc = dk$length[dk$used_tool==1 | dk$debris_at_site_almendra==1]  ,
+     width_tc = dk$width[dk$used_tool==1 | dk$debris_at_site_almendra==1]  
+     # almendra = dk$debris_at_site_almendra[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
+     # nerite = dk$debris_at_site_marine_snail[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
+     # herm_crab = dk$debris_at_site_hermit_crabs[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
+     # halloween = dk$debris_at_site_halloween_crabs[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
+     # river_snail = dk$debris_at_site_river_snail[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
+     # bactris = dk$debris_at_site_bactris_fruit[dk$used_tool==0 | dk$debris_at_site_almendra==1]  , 
+     # astro = dk$astro[dk$used_tool==0 | dk$debris_at_site_almendra==1] ,
+     #used_tool = dk$used_tool[dk$used_tool==0 | dk$debris_at_site_almendra==1] 
+)

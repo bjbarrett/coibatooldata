@@ -62,7 +62,7 @@ PostExtractPreds1 <- function( model , funk , almendra=0 , nerite=0 , herm_crab=
 
 
 ###raw_tc
-
+precis(m_raw_tc)
 #below are objects we can call into overleaf doc
 
 almendra_mass_mean <- PostExtractPreds1(model=mw3 , funk=mean , almendra=1)
