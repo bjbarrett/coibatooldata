@@ -167,3 +167,31 @@ points(pthc,rep(0, length(pthc)) , cex=0.7 , col=col.alpha(palette[3],0.33) , pc
 ptrs <- dk$weight_g[dk$debris_at_site_river_snail==1]
 points(ptrs,rep(0, length(ptrs)) , cex=0.7 , col=col.alpha(palette[5],0.33) , pch=19, add=T)
 
+
+
+######raw
+dens(data_list_raw_tc$weight[data_list_raw_tc$used_tool==1] , col="cornflowerblue" , xlim=c(0 , max(data_list_raw_tc$weight)) , ylim=c(-.0001 , 0.003), lwd=3, xlab="weight (g)")
+abline(v=median(data_list_raw_tc$weight[data_list_raw_tc$used_tool==1]) , col="cornflowerblue")
+dens(data_list_raw_tc$weight[data_list_raw_tc$used_tool==0] , col="darkgrey" , add=TRUE, lwd=3)
+abline(v=median(data_list_raw_tc$weight[data_list_raw_tc$used_tool==0]) , col="darkgrey")
+post <- extract.samples(m_raw_tc)
+curve(dgamma(x , shape=median(post$a_tc) , scale=median(post$scale_tc) ) ,  add=TRUE ,col="cornflowerblue")  #range of mean predictions
+
+for ( i in 1:500 ) {
+     curve(dgamma(x , shape=post$a_raw[i] , scale=1/post$scale_raw[i])  , add=TRUE ,  col=col.alpha("darkgrey",0.05))
+}
+
+precis(m_raw_tc)
+dens(data_list_raw_tc$weight[data_list_raw_tc$used_tool==1] , col="cornflowerblue"  , ylim=c(-.0001 , 3) , lwd=3, xlab="weight (g)" , xlim=c(0,5) )
+abline(v=median(data_list_raw_tc$weight[data_list_raw_tc$used_tool==1]) , col="cornflowerblue")
+dens(data_list_raw_tc$weight[data_list_raw_tc$used_tool==0] , col="darkgrey" , add=TRUE, lwd=3)
+abline(v=median(data_list_raw_tc$weight[data_list_raw_tc$used_tool==0]) , col="darkgrey")
+
+# abline(v=exp(6.33) , col="cornflowerblue" ,lw=3)
+# abline(v=exp(3.86) , col="darkgrey" ,lw=3)
+
+for ( i in 1:1000 ) {
+     curve(dgamma(x , shape=exp(post$a_raw[i]) , scale=post$scale_raw[i])  , add=TRUE ,  col=col.alpha("darkgrey",0.05))
+     curve(dgamma(x , shape=exp(post$a_tc[i]) , scale=post$scale_tc[i])  , add=TRUE ,  col=col.alpha("cornflowerblue",0.05))
+}
+

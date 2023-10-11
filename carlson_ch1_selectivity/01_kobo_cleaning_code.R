@@ -7,7 +7,7 @@ library(cmdstanr)
 numbers_only <- function(x) !grepl("\\D", x)
 
 ####load new data from kobo
-dk_raw <- read.csv("~/Downloads/Capuchin_Tool_Surveying_-_all_versions_-_False_-_2023-09-19-14-07-47.csv", sep=";", header=T)
+dk_raw <- read.csv("~/Documents/coibatooldata/data/tool_data/coiba_capuchin_tool_survey_kobo/Capuchin_Tool_Surveying_-_all_versions_-_False_-_2023-09-21-13-51-36.csv", sep=";", header=T)
 # dk$hardness <- rowMeans(dk[, c("hardness_1_hld", "hardness_2_hld", "hardness_3_hld", 
 #                                "hardness_4_hld", "hardness_5_hld", "hardness_6_hld", "hardness_7_hld", 
 #                                "hardness_8_hld", "hardness_9_hld") ] , na.rm = TRUE)
@@ -93,9 +93,12 @@ astro  <- c("Astrocaryum spp, rio esc" , "Astrocaryum spp, rio esc" , "Astrocary
             "Debris: unknown nut. See pictures." , "In forest, across from mudslide. Unknown fruit/nut. Collected for ID" ,
             "Other debris: astrocaryum" , "Palm of astrocaryum.Taken back for Meredith to measure. Pedro has it. I have debris in left pocket." , 
             "Rio escondido, fruit/nut unknown" , "Unidentified nut" , "Unknown nut: round with thin shell")
-dk_tools$astro <- 0
+dk_tools$astro <- dk$astro <- 0
 for (i in 1 : nrow(dk_tools)){
      dk_tools$astro[i] <- ifelse(dk_tools$comments[i] %in% astro , 1 , 0)
+}
+for (i in 1 : nrow(dk)){
+     dk$astro[i] <- ifelse(dk$comments[i] %in% astro , 1 , 0)
 }
 ### create simplified datalist to read in models
 data_list <- list(
@@ -111,4 +114,24 @@ data_list <- list(
      bactris = dk_tools$debris_at_site_bactris_fruit , 
      astro = dk_tools$astro
      )
+
+dk$weight_g[dk$used_tool==0 | dk$debris_at_site_almendra==1] 
+dk$weight_g
+
+data_list_raw_tc <- list(
+     weight = dk$weight_g[dk$used_tool==0 | dk$debris_at_site_almendra==1]/1000  ,
+     thickness = dk$thickness[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
+     length = dk$length[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
+     width = dk$width[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
+     almendra = dk$debris_at_site_almendra[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
+     nerite = dk$debris_at_site_marine_snail[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
+     herm_crab = dk$debris_at_site_hermit_crabs[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
+     halloween = dk$debris_at_site_halloween_crabs[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
+     river_snail = dk$debris_at_site_river_snail[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,
+     bactris = dk$debris_at_site_bactris_fruit[dk$used_tool==0 | dk$debris_at_site_almendra==1]  , 
+     astro = dk$astro[dk$used_tool==0 | dk$debris_at_site_almendra==1] ,
+     used_tool = dk$used_tool[dk$used_tool==0 | dk$debris_at_site_almendra==1] 
+)
+
+str(data_list_raw_tc)
 

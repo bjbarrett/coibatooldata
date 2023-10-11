@@ -30,7 +30,7 @@ mw2 <- ulam(
      alist(
           weight ~ dgamma2(mu,scale),
           log(mu) <- a + ba*almendra + bn*nerite + bhc*herm_crab + bgq*halloween + brs*river_snail,
-          a ~ normal(6,1.2), #prior for mean
+          a ~ normal(0,12), #prior for mean
           c(ba,bn,bhc,bgq,brs) ~ normal(0,1),
           scale ~ dexp(0.005)
      ),
@@ -73,3 +73,24 @@ mw4 <-  ulam(
 
 #########length , width , thickness needed with rechecked priors
 
+
+#####RAW MATERIAL
+
+m_raw_tc <-  ulam(
+     alist(
+          weight ~ dgamma2(mu_tc,scale_tc),
+          log(mu_tc) <- a_tc,
+          
+          thickness ~ dgamma2(mu_raw,scale_raw) ,
+          log(mu_raw) <- a_raw ,
+          
+          c(a_raw,a_tc) ~ normal(0,2), #prior for mean
+          c(scale_tc,scale_raw) ~ exponential(1)
+     ),
+     
+     data=data_list_raw_tc, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4, 
+)
+
+dens(rgamma(10000 , rate=1 , shape=2 , scale=4))
+
+     

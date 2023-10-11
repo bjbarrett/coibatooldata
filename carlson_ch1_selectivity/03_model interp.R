@@ -3,6 +3,8 @@ precis(mw2)
 precis(mw3)
 coeftab(mw0,mw1,mw2,mw3)
 
+
+precis(m_raw_tc)
 #mw0 
 post_p <-extract.prior(mw0) #extract prior from intecpts only model visualize that predictions are reasonabl given biology and also predict some unrealist values i.e. 10+ kg stones
 precis(mw0) #summarize output
@@ -57,6 +59,10 @@ PostExtractPreds1 <- function( model , funk , almendra=0 , nerite=0 , herm_crab=
      print(funk(exp(frogs)))
 }
 
+
+
+###raw_tc
+
 #below are objects we can call into overleaf doc
 
 almendra_mass_mean <- PostExtractPreds1(model=mw3 , funk=mean , almendra=1)
@@ -76,3 +82,8 @@ river_snail_mass_hpdi  <- PostExtractPreds1(model=mw3 , funk=HPDI , river_snail=
 
 astro_mass_mean  <- PostExtractPreds1(model=mw3 , funk=mean , astro=1)
 astro_mass_hpdi  <- PostExtractPreds1(model=mw3 , funk=HPDI , astro=1)
+
+
+
+
+
