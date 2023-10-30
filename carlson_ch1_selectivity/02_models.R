@@ -79,7 +79,7 @@ mw4 <-  ulam(
 m_raw_tc <-  ulam(
      alist(
           weight_tc ~ dgamma2(mu_tc,scale_tc), #unique shape and scale for almendras
-          log(mu_tc) <- a_tc, #the regression to which we need to make it just jicaron
+          log(mu_tc) <- a_tc , #the regression to which we need to make it just jicaron
           weight_raw ~ dgamma2(mu_raw,scale_raw) , #raw weight shape and scale
           log(mu_raw) <- a_raw ,
           
@@ -92,5 +92,5 @@ m_raw_tc <-  ulam(
 
 precis(m_raw_tc)
 
-dens( rgamma2(n=10000 , mu=exp(6) , scale=1.2) )
+
      

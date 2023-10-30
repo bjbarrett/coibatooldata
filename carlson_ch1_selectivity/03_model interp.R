@@ -85,5 +85,14 @@ astro_mass_hpdi  <- PostExtractPreds1(model=mw3 , funk=HPDI , astro=1)
 
 
 
+x<- rnorm(n=10000 , mean=3.4 , sd=2)
+shart <- summary(x)
+print(xtable(shart, type = "latex") , file = "filename2.tex")
 
+
+library(xtable)
+input1 <- c(0,0,0,1,1,1,1,2,2,2,2)
+input2 <- c(0,0,0,0,0,1,0,0,0,1,2)
+result <- table(input1, input2)
+xtable(result)
 

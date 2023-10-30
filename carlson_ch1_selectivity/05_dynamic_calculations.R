@@ -9,8 +9,8 @@ prep_latex_variables <- function(named_list) {
 
 post <- extract.samples(m_raw_tc)
 calcs <- list(
-     mean_tc_hammer_weight = prettyNum(mean(exp(post$a_tc)), big.mark = ","), # assuming an `obs` data frame
-     raw_tc_hammer_weight = prettyNum(mean(exp(post$a_raw)), big.mark = ",") # assuming an `obs` data frame
+     mean_tc_hammer_weight = round(mean(exp(post$a_tc))), # assuming an `obs` data frame
+     raw_tc_hammer_weight = round(mean(exp(post$a_raw))) # assuming an `obs` data frame
      
      #mean_tc_hammer_weight = prettyNum(nrow(obs), big.mark = ","), # assuming an `obs` data frame
      # nPpl = nrow(ppl),                            # assuming a `ppl` data frame
