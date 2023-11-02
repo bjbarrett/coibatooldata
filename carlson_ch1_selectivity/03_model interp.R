@@ -3,8 +3,21 @@ precis(mw2)
 precis(mw3)
 coeftab(mw0,mw1,mw2,mw3)
 
+precis(ml1)
+precis(ml2)
+precis(ml3)
+coeftab(ml1, ml2, ml3)
 
-precis(m_raw_tc)
+precis(md1)
+precis(md2)
+precis(md3)
+coeftab(md1, md2, md3)
+
+precis(mt1)
+precis(mt2)
+precis(mt3)
+coeftab(mt1, mt2, mt3)
+
 #mw0 
 post_p <-extract.prior(mw0) #extract prior from intecpts only model visualize that predictions are reasonabl given biology and also predict some unrealist values i.e. 10+ kg stones
 precis(mw0) #summarize output
@@ -24,6 +37,8 @@ for ( i in 1:500 ) {
 post_p <-extract.prior(mw1) #extract prior from intecpts only model visualize that predictions are reasonabl given biology and also predict some unrealist values i.e. 10+ kg stones
 precis(mw1) #summarize output
 trankplot(mw1) #diagnostics for mixing
+traceplot(mw1) #diagnostics for mixing
+
 dev.off()
 
 #visualize prior predictive sims of intercept
@@ -58,11 +73,11 @@ PostExtractPreds1 <- function( model , funk , almendra=0 , nerite=0 , herm_crab=
      frogs <- with(post , a + ba*almendra + bn*nerite + bhc*herm_crab + bgq*halloween + brs*river_snail + baXn*almendra*nerite + baXhc*almendra*herm_crab + baXhcXgq*almendra*halloween*herm_crab + bas*astro + basXrs*astro*river_snail,)
      print(funk(exp(frogs)))
 }
-
-
-
+## raw models
 ###raw_tc
 precis(m_raw_tc)
+
+
 #below are objects we can call into overleaf doc
 
 almendra_mass_mean <- PostExtractPreds1(model=mw3 , funk=mean , almendra=1)
@@ -83,16 +98,4 @@ river_snail_mass_hpdi  <- PostExtractPreds1(model=mw3 , funk=HPDI , river_snail=
 astro_mass_mean  <- PostExtractPreds1(model=mw3 , funk=mean , astro=1)
 astro_mass_hpdi  <- PostExtractPreds1(model=mw3 , funk=HPDI , astro=1)
 
-
-
-x<- rnorm(n=10000 , mean=3.4 , sd=2)
-shart <- summary(x)
-print(xtable(shart, type = "latex") , file = "filename2.tex")
-
-
-library(xtable)
-input1 <- c(0,0,0,1,1,1,1,2,2,2,2)
-input2 <- c(0,0,0,0,0,1,0,0,0,1,2)
-result <- table(input1, input2)
-xtable(result)
 

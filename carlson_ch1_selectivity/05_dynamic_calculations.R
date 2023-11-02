@@ -18,4 +18,3 @@ calcs <- list(
 )
 
 writeLines(prep_latex_variables(calcs), "carlson_ch1_selectivity/calcs.tex")
-

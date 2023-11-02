@@ -29,6 +29,9 @@ jicaron_days <- sort(unique(dk$today[which(dk$island=="jicaron")]))
 dk$island <- ifelse( dk$today %in% coiba_days , "coiba" , "jicaron")
 dk$island_index <- as.integer(as.factor(dk$island ))
 
+dk_c <- dk[dk$island_index==1,]
+dk_j <- dk[dk$island_index==2,]
+
 xx <- as.vector(sapply(dk_raw, function(x)all(any(is.na(x))))) #makes a vector of T/F if all NA
 dk <- dk_raw[,xx==FALSE] #creat dk which removes all columns with all NAs
 colnames(dk)
@@ -93,12 +96,9 @@ astro  <- c("Astrocaryum spp, rio esc" , "Astrocaryum spp, rio esc" , "Astrocary
             "Debris: unknown nut. See pictures." , "In forest, across from mudslide. Unknown fruit/nut. Collected for ID" ,
             "Other debris: astrocaryum" , "Palm of astrocaryum.Taken back for Meredith to measure. Pedro has it. I have debris in left pocket." , 
             "Rio escondido, fruit/nut unknown" , "Unidentified nut" , "Unknown nut: round with thin shell")
-dk_tools$astro <- dk$astro <- 0
+dk_tools$astro <- 0
 for (i in 1 : nrow(dk_tools)){
      dk_tools$astro[i] <- ifelse(dk_tools$comments[i] %in% astro , 1 , 0)
-}
-for (i in 1 : nrow(dk)){
-     dk$astro[i] <- ifelse(dk$comments[i] %in% astro , 1 , 0)
 }
 ### create simplified datalist to read in models
 data_list <- list(
@@ -114,9 +114,6 @@ data_list <- list(
      bactris = dk_tools$debris_at_site_bactris_fruit , 
      astro = dk_tools$astro
      )
-
-dk$weight_g[dk$used_tool==0 | dk$debris_at_site_almendra==1] 
-dk$weight_g
 
 data_list_raw_tc <- list(
      weight = dk$weight_g[dk$used_tool==0 | dk$debris_at_site_almendra==1]  ,

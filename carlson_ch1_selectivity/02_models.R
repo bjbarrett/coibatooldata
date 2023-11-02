@@ -16,7 +16,7 @@ mw1 <- ulam(
      alist(
           weight ~ dgamma2(mu,scale),
           log(mu) <- a + ba*almendra,
-          a ~ normal(5,1.), #prior for mean
+          a ~ normal(6,1.2), #prior for mean
           ba ~ normal(0,1),
           scale ~ dexp(0.005)
      ),
@@ -30,7 +30,7 @@ mw2 <- ulam(
      alist(
           weight ~ dgamma2(mu,scale),
           log(mu) <- a + ba*almendra + bn*nerite + bhc*herm_crab + bgq*halloween + brs*river_snail,
-          a ~ normal(0,12), #prior for mean
+          a ~ normal(6,1.2), #prior for mean
           c(ba,bn,bhc,bgq,brs) ~ normal(0,1),
           scale ~ dexp(0.005)
      ),
@@ -72,25 +72,236 @@ mw4 <-  ulam(
 )
 
 #########length , width , thickness needed with rechecked priors
+#length
+ml0 <- ulam(
+        alist(
+                length ~ dgamma2(mu,scale),
+                log(mu) <- a ,
+                a ~ normal(4,1), #prior for mean
+                scale ~ dexp(1.2)
+        ),
+        
+        data=data_list, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4 
+)
+
+#almendra not-almendra
+ml1 <- ulam(
+        alist(
+                length ~ dgamma2(mu,scale),
+                log(mu) <- a + ba*almendra,
+                a ~ normal(4,1), #prior for mean
+                ba ~ normal(0,1),
+                scale ~ dexp(1.2)
+        ),
+        
+        data=data_list, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4, 
+)
+
+
+#all resources, ignoring co-occurence
+ml2 <- ulam(
+        alist(
+                length ~ dgamma2(mu,scale),
+                log(mu) <- a + ba*almendra + bn*nerite + bhc*herm_crab + bgq*halloween + brs*river_snail,
+                a ~ normal(4,1), #prior for mean
+                c(ba,bn,bhc,bgq,brs) ~ normal(0,1),
+                scale ~ dexp(1.2)
+        ),
+        
+        data=data_list, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4
+)
+
+
+#all resources, with co-occurence
+ml3 <- ulam(
+        alist(
+                length ~ dgamma2(mu,scale),
+                log(mu) <- a + ba*almendra + bn*nerite + bhc*herm_crab + bgq*halloween + brs*river_snail + bas*astro + INT,
+                INT <- baXn*almendra*nerite + baXhc*almendra*herm_crab + baXhcXgq*almendra*halloween*herm_crab + basXrs*astro*river_snail,
+                a ~ normal(4,1), #prior for mean
+                c(ba,bn,bhc,bgq,brs,baXn,baXhc,baXhcXgq,basXrs,bas) ~ normal(0,1),
+                scale ~ dexp(1.2)
+        ),
+        
+        data=data_list, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4, 
+)
+
+#width
+#mean of all tools
+md0 <- ulam(
+        alist(
+                width ~ dgamma2(mu,scale),
+                log(mu) <- a ,
+                a ~ normal(4,1), #prior for mean
+                scale ~ dexp(0.005)
+        ),
+        
+        data=data_list, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4 
+)
+
+md1 <- ulam(
+        alist(
+                width ~ dgamma2(mu,scale),
+                log(mu) <- a + ba*almendra,
+                a ~ normal(4,1), #prior for mean
+                ba ~ normal(0,1),
+                scale ~ dexp(0.005)
+        ),
+        
+        data=data_list, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4, 
+)
+
+#all resources, ignoring co-occurrence 
+md2 <- ulam(
+        alist(
+                width ~ dgamma2(mu,scale),
+                log(mu) <- a + ba*almendra + bn*nerite + bhc*herm_crab + bgq*halloween + brs*river_snail,
+                a ~ normal(4,1), #prior for mean
+                c(ba,bn,bhc,bgq,brs) ~ normal(0,1),
+                scale ~ dexp(0.005)
+        ),
+        
+        data=data_list, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4
+)
+
+#all resources, accounting for co-occurence
+md3 <- ulam(
+        alist(
+                width ~ dgamma2(mu,scale),
+                log(mu) <- a + ba*almendra + bn*nerite + bhc*herm_crab + bgq*halloween + brs*river_snail + bas*astro + INT,
+                INT <- baXn*almendra*nerite + baXhc*almendra*herm_crab + baXhcXgq*almendra*halloween*herm_crab + basXrs*astro*river_snail,
+                a ~ normal(4,1), #prior for mean
+                c(ba,bn,bhc,bgq,brs,baXn,baXhc,baXhcXgq,basXrs,bas) ~ normal(0,1),
+                scale ~ dexp(0.005)
+        ),
+        
+        data=data_list, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4, 
+)
+
+#thickness
+mt0  <- ulam(
+        alist(
+                thickness ~ dgamma2(mu,scale),
+                log(mu) <- a ,
+                a ~ normal(4,1), #prior for mean
+                scale ~ dexp(0.005)
+        ),
+        
+        data=data_list, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4 
+)
+
+#almendra vs non-almendra
+mt1<- ulam(
+        alist(
+                thickness ~ dgamma2(mu,scale),
+                log(mu) <- a + ba*almendra,
+                a ~ normal(4,1), #prior for mean
+                ba ~ normal(0,1),
+                scale ~ dexp(0.005)
+        ),
+        
+        data=data_list, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4, 
+)
+
+#all resources, ignoring co-occurrence
+mt2 <- ulam(
+        alist(
+                thickness ~ dgamma2(mu,scale),
+                log(mu) <- a + ba*almendra + bn*nerite + bhc*herm_crab + bgq*halloween + brs*river_snail,
+                a ~ normal(4,1), #prior for mean
+                c(ba,bn,bhc,bgq,brs) ~ normal(0,1),
+                scale ~ dexp(0.005)
+        ),
+        
+        data=data_list, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4
+)
+
+#all resources, permitting co-occurrence
+mt3 <- ulam(
+        alist(
+                thickness ~ dgamma2(mu,scale),
+                log(mu) <- a + ba*almendra + bn*nerite + bhc*herm_crab + bgq*halloween + brs*river_snail + bas*astro + INT,
+                INT <- baXn*almendra*nerite + baXhc*almendra*herm_crab + baXhcXgq*almendra*halloween*herm_crab + basXrs*astro*river_snail,
+                a ~ normal(4,1), #prior for mean
+                c(ba,bn,bhc,bgq,brs,baXn,baXhc,baXhcXgq,basXrs,bas) ~ normal(0,1),
+                scale ~ dexp(0.005)
+        ),
+        
+        data=data_list, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4, 
+)
+
 
 
 #####RAW MATERIAL
 
 m_raw_tc <-  ulam(
      alist(
-          weight_tc ~ dgamma2(mu_tc,scale_tc), #unique shape and scale for almendras
-          log(mu_tc) <- a_tc , #the regression to which we need to make it just jicaron
-          weight_raw ~ dgamma2(mu_raw,scale_raw) , #raw weight shape and scale
-          log(mu_raw) <- a_raw ,
+          weight_tc ~ dgamma2(mu_w_tc,scale_w_tc), #unique shape and scale for almendras
+          log(mu_w_tc) <- w_tc , #the regression to which we need to make it just jicaron
+          weight_raw ~ dgamma2(mu_w_raw,scale_w_raw) , #raw weight shape and scale
+          log(mu_w_raw) <- w_raw ,
           
-          c(a_raw,a_tc) ~ normal(5,1.8), #prior for mean
-          c(scale_tc,scale_raw) ~ exponential(0.0005) # we need a big scale for weight
+          c(w_raw,w_tc) ~ normal(5,1.8), #prior for mean
+          c(scale_w_tc,scale_w_raw) ~ exponential(0.0005) # we need a big scale for weight
      ),
-
+     
      data=dl_raw_tc_comp, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4,
 )
 
 precis(m_raw_tc)
 
-
+m_raw_tc2 <-  ulam(
+     alist(
+          thickness_tc ~ dgamma2(mu_t_tc,scale_t_tc), #unique shape and scale for almendras
+          log(mu_t_tc) <- t_tc , #the regression to which we need to make it just jicaron
+          thickness_raw ~ dgamma2(mu_t_raw,scale_t_raw) , #raw weight shape and scale
+          log(mu_t_raw) <- t_raw ,
+          
+          c(t_raw,t_tc) ~ normal(3,2.5), #prior for mean
+          c(scale_t_tc,scale_t_raw) ~ exponential(0.01) # we need a big scale for weight
+     ),
      
+     data=dl_raw_tc_comp, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4,
+)
+
+m_raw_tc3 <-  ulam(
+     alist(
+          weight_tc ~ dgamma2(mu_w_tc,scale_w_tc), #unique shape and scale for almendras
+          log(mu_w_tc) <- w_tc , #the regression to which we need to make it just jicaron
+          weight_raw ~ dgamma2(mu_w_raw,scale_w_raw) , #raw weight shape and scale
+          log(mu_w_raw) <- w_raw ,
+          
+          thickness_tc ~ dgamma2(mu_t_tc,scale_t_tc), #unique shape and scale for almendras
+          log(mu_t_tc) <- t_tc , #the regression to which we need to make it just jicaron
+          thickness_raw ~ dgamma2(mu_t_raw,scale_t_raw) , #raw weight shape and scale
+          log(mu_t_raw) <- t_raw ,
+          
+          length_tc ~ dgamma2(mu_l_tc,scale_l_tc), #unique shape and scale for almendras
+          log(mu_l_tc) <- l_tc , #the regression to which we need to make it just jicaron
+          length_raw ~ dgamma2(mu_l_raw,scale_l_raw) , #raw weight shape and scale
+          log(mu_l_raw) <- l_raw ,
+          
+          width_tc ~ dgamma2(mu_wd_tc,scale_wd_tc), #unique shape and scale for almendras
+          log(mu_wd_tc) <- wd_tc , #the regression to which we need to make it just jicaron
+          width_raw ~ dgamma2(mu_wd_raw,scale_wd_raw) , #raw weight shape and scale
+          log(mu_wd_raw) <- wd_raw ,
+          
+          
+          c(w_raw,w_tc) ~ normal(5,1.8), #prior for mean
+          c(scale_w_tc,scale_w_raw) ~ exponential(0.0005), # we need a big scale for weight
+          
+          c(t_raw,t_tc) ~ normal(3,2.5), #prior for mean
+          c(scale_t_tc,scale_t_raw) ~ exponential(0.01), # we need a big scale for weight
+          
+          c(l_raw,l_tc) ~ normal(3,2.5), #prior for mean
+          c(scale_l_tc,scale_l_raw) ~ exponential(0.01), # we need a big scale for weight
+          
+          c(wd_raw,wd_tc) ~ normal(3,2.5), #prior for mean
+          c(scale_wd_tc,scale_wd_raw) ~ exponential(0.01) # we need a big scale for weight
+          
+     ),
+     
+     data=dl_raw_tc_comp, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4,
+)
+
+precis(m_raw_tc3)

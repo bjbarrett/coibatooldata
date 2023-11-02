@@ -4,6 +4,7 @@ install.packages("tidyverse")
 library(gt)
 library(gtsummary)
 library(tidyverse)
+library(xtable)
 
 # ##Coiba and Jicaron combined
 # dk_tab <- dk %>% select(weight_g, length_mm_max, width_mm_max,thickness, used_tool)
@@ -56,7 +57,24 @@ coiba_tab %>% tbl_summary(by = used_tool,
 
 ###Table using xtable
 library(xtable)
-data(jic_tab)
-xtable(summary(jic_tab))
 
 
+#tables for selectivity
+tabz <- as.data.frame(precis(m_raw_tc3, digits=2 ))
+str(tabz)
+tabz@row.names <- c( "$\\alpha_{wg,tc}$","$\\alpha_{wg,raw}$","$\\phi_{wg,raw}$","$\\phi_{wg,tc}$","$\\alpha_{t,tc}$","$\\alpha_{t,raw}$","$\\phi_{t,raw}$","$\\phi_{t,tc}$",
+                    "$\\alpha_{l,tc}$","$\\alpha_{l,raw}$","$\\phi_{l,raw}$","$\\phi_{l,tc}$","$\\alpha_{wd,tc}$","$\\alpha_{wd,raw}$","$\\phi_{wd,raw}$","$\\phi_{wd,tc}$" )
+str(tabz)
+tabz <- tabz[,1:4]
+tabz@names <- c("mean","sd","5.5\\%","94.5\\%")
+
+yams <- xtable(tabz ,
+               digits=2 , 
+               label="tab:model_sum_raw_dims" , 
+               caption="Summaries parameter posteriors distributions
+               (mean, standard deviation, and 89 \\% HPDI) estimated from a multivariate 
+               gamma distributed GLM comparing availible raw materials to used 
+              \\textit{T. catappa} hammerstomes" )
+yams
+
+print(yams , file="jicaron_tc_raw_mat.tex" , sanitize.text.function=function(x){x} ) #sanitize text makes math mode latex friendly
