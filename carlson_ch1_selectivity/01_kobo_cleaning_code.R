@@ -64,10 +64,9 @@ for( i in 1:nrow(dk)){
         dk$used_tool[i] <- ifelse(criteria[i]==TRUE , 1 , dk$used_tool[i])
 }
 
-dk$weight_g
-dk <- dk[which(dk$weight_g!=0 & dk$length_mm_max!=0 &  dk$width_mm_max!=0 & dk$thickness!=0),]
 
-dk$used_tool
+dk <- dk[which(dk$weight_g!=0 & dk$length_mm_max!=0 &  dk$width_mm_max!=0 & dk$thickness!=0),]
+dk <- dk[!(dk$weight_g == 4.8), ]  #remove row 670 (collection error, lists weight as 4.8g)
 
 dk_tools <- dk[dk$used_tool==1,]
 
@@ -131,6 +130,7 @@ for (i in 1 : nrow(dk_c)){
  
 #combine   
 dk_c$fw_snail <- dk_c$shell + dk_c$river_snail
+
 
 
 dk_jt <- dk_j[dk_j$used_tool==1,] #jicaron tools
