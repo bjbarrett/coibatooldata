@@ -1,5 +1,8 @@
 precis(mj1)
 precis(mj2)
+coeftab(mj1, mj2)
+
+precis(mj2v, depth=2)
 
 precis(mc1)
 precis(mc2)

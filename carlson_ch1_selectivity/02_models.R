@@ -26,6 +26,7 @@ mj2 <- ulam(
         data=data_list_j, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4
 )
 
+
 #coiba
 #astrocaryum
 mc1 <- ulam(
@@ -52,6 +53,37 @@ mc2 <- ulam(
         
         data=data_list_c, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4
 )
+
+#varying effects trip
+mc2v <- ulam(
+        alist(
+                weight ~ dgamma2(mu,scale),
+                log(mu) <- a + a_trip[trip] + bas*astro + brs*river_snail,
+                a ~ normal(6,1.2), #prior for mean
+                a_trip[trip] ~ normal(0, sigma),
+                c(bas,brs) ~ normal(0,1),
+                scale ~ dexp(0.005),
+                sigma ~ dexp(1)
+        ),
+
+        data=data_list_c, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4
+) #not working
+#
+mj2v <- ulam(
+        alist(
+                weight ~ dgamma2(mu,scale),
+                log(mu) <- a + a_trip[trip] + ba*almendra + bhc*herm_crab,
+                a ~ normal(6,1.2), #prior for mean
+                a_trip[trip] ~ normal(0, sigma),
+                c(ba,bhc) ~ normal(0,1),
+                scale ~ dexp(0.005),
+                sigma ~ dexp(1)
+        ),
+        
+        data=data_list_j, cores=4 , warmup=1000 , iter=2000 , sample=TRUE, chains=4
+)
+##
+
 
 ######
 ##

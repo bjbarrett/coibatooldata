@@ -68,6 +68,51 @@ for( i in 1:nrow(dk)){
 dk <- dk[which(dk$weight_g!=0 & dk$length_mm_max!=0 &  dk$width_mm_max!=0 & dk$thickness!=0),]
 dk <- dk[!(dk$weight_g == 4.8), ]  #remove row 670 (collection error, lists weight as 4.8g)
 
+#by trip 
+unique(dk$today) #(jul21,jan22, jul22, jan23, mar23, jul23, sep23, jan24)
+
+criteria <- str_detect(dk$today, "2021-07")  # Extract matching rows with str_detect
+for( i in 1:nrow(dk)){
+        dk$trip [i] <- ifelse(criteria[i]==TRUE , 1 , dk$trip[i])
+}
+
+criteria <- str_detect(dk$today, "2022-01") 
+for( i in 1:nrow(dk)){
+        dk$trip [i] <- ifelse(criteria[i]==TRUE , 2 , dk$trip[i])
+}
+
+criteria <- str_detect(dk$today, "2022-07") 
+for( i in 1:nrow(dk)){
+        dk$trip [i] <- ifelse(criteria[i]==TRUE , 3 , dk$trip[i])
+}
+
+criteria <- str_detect(dk$today, "2023-01") 
+for( i in 1:nrow(dk)){
+        dk$trip [i] <- ifelse(criteria[i]==TRUE , 4 , dk$trip[i])
+}
+
+criteria <- str_detect(dk$today, "2023-03") 
+for( i in 1:nrow(dk)){
+        dk$trip [i] <- ifelse(criteria[i]==TRUE , 5 , dk$trip[i])
+}
+
+criteria <- str_detect(dk$today, "2023-07") 
+for( i in 1:nrow(dk)){
+        dk$trip [i] <- ifelse(criteria[i]==TRUE , 6 , dk$trip[i])
+}
+
+criteria <- str_detect(dk$today, "2023-09") 
+for( i in 1:nrow(dk)){
+        dk$trip [i] <- ifelse(criteria[i]==TRUE , 7 , dk$trip[i])
+}
+
+criteria <- str_detect(dk$today, "2024-01") 
+for( i in 1:nrow(dk)){
+        dk$trip [i] <- ifelse(criteria[i]==TRUE , 8 , dk$trip[i])
+}
+
+dk$trip_id <- as.integer(dk$trip)
+
 dk_tools <- dk[dk$used_tool==1,]
 
 #need to remove from this: "cliff", "not a site", "D01", "D02"
@@ -152,7 +197,8 @@ data_list_j <- list(
         herm_crab = dk_jt$debris_at_site_hermit_crabs ,
         halloween = dk_jt$debris_at_site_halloween_crabs ,
         river_snail = dk_jt$debris_at_site_river_snail ,
-        bactris = dk_jt$debris_at_site_bactris_fruit  
+        bactris = dk_jt$debris_at_site_bactris_fruit ,
+        trip = dk_jt$trip_id
 )
 
 #Coiba datalist
@@ -166,6 +212,7 @@ data_list_c <- list(
         halloween = dk_ct$debris_at_site_halloween_crabs ,
         river_snail = dk_ct$fw_snail ,
         bactris = dk_ct$debris_at_site_bactris_fruit , 
-        astro = dk_ct$astrocaryum
+        astro = dk_ct$astrocaryum,
+        trip = dk_ct$trip_id
 )
 
