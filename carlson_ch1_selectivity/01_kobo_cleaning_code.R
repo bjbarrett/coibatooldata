@@ -231,7 +231,9 @@ data_j_select <- list(
         t_wt = dk_jt$weight_g ,
         t_th = dk_jt$thickness,
         t_l = dk_jt$length_mm_max,
-        t_wd = dk_jt$width_mm_max
+        t_wd = dk_jt$width_mm_max,
+        alm_wt = dk_jt$weight_g[dk_jt$debris_at_site_almendra==1],
+        sh_wt = dk_jt$weight_g[dk_jt$debris_at_site_hermit_crabs==1]
 )
 
 data_c_select <- list (
@@ -242,5 +244,7 @@ data_c_select <- list (
         t_wt = dk_ct$weight_g ,
         t_th = dk_ct$thickness,
         t_l = dk_ct$length_mm_max,
-        t_wd = dk_ct$width_mm_max
+        t_wd = dk_ct$width_mm_max,
+        as_wt = dk_ct$weight_g[dk_ct$astro==1],
+        sh_wt = dk_ct$weight_g[dk_ct$shell==1]
 )
