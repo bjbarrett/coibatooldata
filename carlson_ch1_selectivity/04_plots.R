@@ -74,3 +74,32 @@ PlotToolPost_c <- function( model , astro=0 , river_snail=0 , color="black" , gr
 PlotToolPost_c(model= mc2 , astro=1 , color=palette[3] , graph_title= "Astrocaryum spp")
 PlotToolPost_c(model= mc2 , river_snail=1 , color=palette[4] , graph_title= "Freshwater snail")
 
+
+#m2_select_c
+#coiba selectivity shell, astro, rm
+# PlotSelectPost_c <- function(model, ast=0, sh=0, rm=0, color="black", graph_title="words"){
+#         post <- extract.samples(model)
+#         elephant <- with(post, a_as + a_sh + a_rm)
+#         dens(exp(elephant) , xlim=c(0, 3100), ylim=c(0, 0.011), col=color ,  xlab="weight (g)")
+# }
+# 
+# PlotSelectPost_c(model=m2_select_c, ast=1, color=palette[3], graph_title="Astrocaryum spp")
+# PlotSelectPost_c(model=m2_select_c, sh=1, color=palette[4], graph_title = "fw snail")
+# PlotSelectPost_c(model=m2_select_c, rm=1, color=palette[1], graph_title="raw material")
+
+
+#FIGURE 2 FOR CHAPTER
+par(mfrow=c(1,2))
+
+dens(exp(post2c$a_as), xlim=c(0, 2000), ylim=c(0, 0.015), col="#84a955", lwd="2", xlab="Weight (g)")
+dens(exp(post2c$a_sh), col="#c36785", add=TRUE, lwd="2")
+dens(exp(post2c$a_rm), col="#696969", add=TRUE, lwd="2", lty=3)
+legend(1000, 0.015, legend=c("Astrocaryum spp.", "Freshwater snail", "Raw material"),
+       col=c("#84a955", "#c36785", "#696969"), lty=c(1, 1, 3), lwd=2, cex=0.8, text.font=2, box.lty=0)
+
+
+dens(exp(post2j$a_alm), xlim=c(0, 2000), ylim=c(0, 0.015), col="#9f9244", lwd=2, xlab="Weight (g)")
+dens(exp(post2j$a_sh), col="#8961b3", add=TRUE, lwd=2)
+dens(exp(post2j$a_rm), col="#696969", add=TRUE, lwd=2, lty=3)
+legend(1000, 0.015, legend=c("Sea almond", "Hermit crab", "Raw material"),
+       col=c("#9f9244", "#8961b3", "#696969"), lty=c(1, 1, 3), lwd=2, cex=0.8, text.font=2, box.lty=0)

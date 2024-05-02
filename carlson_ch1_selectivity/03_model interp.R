@@ -3,6 +3,7 @@ precis(mj2)
 coeftab(mj1, mj2)
 
 precis(mj2v, depth=2)
+precis(mc2v, depth=2)
 
 precis(mc1)
 precis(mc2)
@@ -43,4 +44,18 @@ for ( i in 1:100 ) {
 
 
 post <- extract.samples(mw3)
+
+#selectivity models
+
+post2c <- extract.samples(m2_select_c)
+dens(exp(post2c$a_as))
+dens(exp(post2c$a_sh))
+dens(exp(post2c$a_rm))
+
+post2j <- extract.samples(m2_select_j)
+dens(exp(post2j$a_alm))
+dens(exp(post2j$a_sh))
+dens(exp(post2j$a_rm))
+
+
 
