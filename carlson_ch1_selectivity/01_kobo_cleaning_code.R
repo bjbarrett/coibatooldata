@@ -191,6 +191,15 @@ dk_crm <- dk_c[dk_c$used_tool==0,] #coiba raw mat
 
 
 ### create simplified datalist to read in models
+
+data_list <- list(
+        weight = dk$weight_g,
+        thickness = dk$thickness,
+        length = dk$length_mm_max,
+        width = dk$width_mm_max,
+)
+
+
 #Jicaron datalist
 data_list_j <- list(
         weight = dk_jt$weight_g ,
@@ -241,10 +250,25 @@ data_c_select <- list (
         rm_th = dk_crm$thickness,
         rm_l = dk_crm$length_mm_max,
         rm_wd = dk_crm$width_mm_max ,
-        t_wt = dk_ct$weight_g ,
+        t_wt = dk_ct$weight_g,
         t_th = dk_ct$thickness,
         t_l = dk_ct$length_mm_max,
         t_wd = dk_ct$width_mm_max,
         as_wt = dk_ct$weight_g[dk_ct$astro==1],
         sh_wt = dk_ct$weight_g[dk_ct$shell==1]
+)
+
+data_c <- list (
+        rm_wt = dk_crm$weight_g,
+        rm_th = dk_crm$thickness,
+        rm_l = dk_crm$length_mm_max,
+        rm_wd = dk_crm$width_mm_max,
+        as_wt = dk_ct$weight_g[dk_ct$astro==1],
+        as_th = dk_ct$thickness[dk_ct$astro==1],
+        as_l = dk_ct$length_mm_max[dk_ct$astro==1],
+        as_wd = dk_ct$width_mm_max[dk_ct$astro==1],
+        fs_wt = dk_ct$weight_g[dk_ct$fw_snail==1],
+        fs_th = dk_ct$thickness[dk_ct$fw_snail==1],
+        fs_l = dk_ct$length_mm_max[dk_ct$fw_snail==1],
+        fs_wd = dk_ct$width_mm_max[dk_ct$fw_snail==1]
 )
